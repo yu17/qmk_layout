@@ -38,6 +38,8 @@ enum planck_keycodes {
     LIGHT_OFF, // base underglow off (layer colours keep working)
     LIGHT_ON,  // base underglow on
     LED_TST,   // blink the rainbow LED test pattern
+    LLCK_LOWER, // Fn + Lower: lock/unlock the Lower layer
+    LLCK_RAISE, // Fn + Raise: lock/unlock the Raise layer
 };
 
 #define LOWER MO(_1_LOWER)
@@ -55,50 +57,53 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | Shift|   Z  |   X  |   C  |   V  |   B  |   N  |   M  |   ,  |   .  |   /  |Enter |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | LCtrl| FN/M | LGUI | LALT | Lower|    Space    | Raise| Left |   Up | Down |Right |
+ * | LCtrl| FN/M | LGUI | LALT | Lower|    Space    | Raise| Left | Down |  Up  |Right |
  * `-----------------------------------------------------------------------------------'
  */
 [_0_BASE] = LAYOUT_planck_grid(
     KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,
     KC_ESC,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
     KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_ENT ,
-    KC_LCTL, FN_APP,  KC_LGUI, KC_LALT, LOWER,   KC_SPC,  KC_SPC,  RAISE,   KC_LEFT, KC_UP,   KC_DOWN, KC_RGHT
+    KC_LCTL, FN_APP,  KC_LGUI, KC_LALT, LOWER,   KC_SPC,  KC_SPC,  RAISE,   KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT
 ),
 
 /* Lower                                                                   LED: green
  * ,-----------------------------------------------------------------------------------.
  * |   `  |   1  |   2  |   3  |   4  |   5  |   6  |   7  |   8  |   9  |   0  | Bksp |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Esc  |CapsWd|      |      |      | LLock| LLock|      |      |   -  |   =  | Del  |
+ * | Esc  |CapsWd|      |      |      |      |      |      |      |   -  |   =  |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | Shift|      |      |      |      |      |      |      |   [  |   ]  |   \  |Enter |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | LCtrl| FN/M | LGUI | LALT |      |    Space    | Extra| Home | PgUp | PgDn | End  |
+ * | LCtrl| FN/M | LGUI | LALT |      |    Space    | Extra| Home | PgDn | PgUp | End  |
  * `-----------------------------------------------------------------------------------'
  */
 [_1_LOWER] = LAYOUT_planck_grid(
     KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_BSPC,
-    KC_ESC,  CW_TOGG, XXXXXXX, XXXXXXX, XXXXXXX, QK_LLCK, QK_LLCK, XXXXXXX, XXXXXXX, KC_MINS, KC_EQL,  KC_DEL,
+    KC_ESC,  CW_TOGG, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_MINS, KC_EQL,  XXXXXXX,
     KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LBRC, KC_RBRC, KC_BSLS, KC_ENT,
-    KC_LCTL, FN_APP,  KC_LGUI, KC_LALT, XXXXXXX, KC_SPC,  KC_SPC,  MO(_4_EXTRA), KC_HOME, KC_PGUP, KC_PGDN, KC_END
+    KC_LCTL, FN_APP,  KC_LGUI, KC_LALT, XXXXXXX, KC_SPC,  KC_SPC,  MO(_4_EXTRA), KC_HOME, KC_PGDN, KC_PGUP, KC_END
 ),
 
-/* Raise                                                                   LED: purple
+/* Raise  (numpad; left half = normal keys, e.g. WASD for games)          LED: purple
+ * Lock it with Fn + Raise; Fn + Space (or Fn + Raise again) unlocks.
+ * Keypad codes (KC_P*), so games/sims see real numpad keys; Num Lock is
+ * switched on automatically when this layer turns on.
  * ,-----------------------------------------------------------------------------------.
- * |   ~  |   !  |   @  |   #  |   $  |   %  |   ^  |   &  |   *  |   (  |   )  | Bksp |
+ * | Tab  |   Q  |   W  |   E  |   R  |   T  |      |NumLck|  7   |  8   |  9   |  *   |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Esc  |CapsWd|      |      |      | LLock| LLock|      |      |   _  |   +  | Del  |
+ * | Esc  |   A  |   S  |   D  |   F  |   G  |  Up  |      |  4   |  5   |  6   |  -   |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Shift|      |      |      |      |      |      |      |   {  |   }  |   |  |Enter |
+ * | Shift|   Z  |   X  |   C  |   V  | Left | Down |Right |  1   |  2   |  3   |  +   |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | LCtrl| FN/M | LGUI | LALT | Extra|    Space    |      | Home | PgUp | PgDn | End  |
+ * | LCtrl| FN/M | LGUI | LALT | Extra|    Space    |(held)|  0   |  .   |  /   |Enter |
  * `-----------------------------------------------------------------------------------'
  */
 [_2_RAISE] = LAYOUT_planck_grid(
-    KC_TILD, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC, KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_BSPC,
-    KC_ESC,  CW_TOGG, XXXXXXX, XXXXXXX, XXXXXXX, QK_LLCK, QK_LLCK, XXXXXXX, XXXXXXX, KC_UNDS, KC_PLUS, KC_DEL,
-    KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LCBR, KC_RCBR, KC_PIPE, KC_ENT,
-    KC_LCTL, FN_APP,  KC_LGUI, KC_LALT, MO(_4_EXTRA), KC_SPC, KC_SPC, XXXXXXX, KC_HOME, KC_PGUP, KC_PGDN, KC_END
+    _______, _______, _______, _______, _______, _______, XXXXXXX, KC_NUM,  KC_P7,   KC_P8,   KC_P9,   KC_PAST,
+    _______, _______, _______, _______, _______, _______, KC_UP,   XXXXXXX, KC_P4,   KC_P5,   KC_P6,   KC_PMNS,
+    _______, _______, _______, _______, _______, KC_LEFT, KC_DOWN, KC_RGHT, KC_P1,   KC_P2,   KC_P3,   KC_PPLS,
+    _______, _______, _______, _______, MO(_4_EXTRA), _______, _______, _______, KC_P0, KC_PDOT, KC_PSLS, KC_PENT
 ),
 
 /* Fn                                                                      LED: lemon
@@ -109,14 +114,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | Shift| Brit-| Brit+|      |      |      |      |      |      | Insrt| Del  |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | LCtrl|      | LGUI | LALT |TG_LOW|   TO_BASE   |TG_RIS|MusTog| RGUI | MENU |RCTRL |
+ * | LCtrl|      | LGUI | LALT |LckLow|   TO_BASE   |LckRai|MusTog| RGUI | MENU |RCTRL |
  * `-----------------------------------------------------------------------------------'
  */
 [_3_FN] = LAYOUT_planck_grid(
     KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,
     KC_MUTE, KC_VOLD, KC_VOLU, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_SCRL, KC_PAUS, KC_PSCR,
     KC_LSFT, KC_BRID, KC_BRIU, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_INS,  KC_DEL,  XXXXXXX,
-    KC_LCTL, XXXXXXX, KC_LGUI, KC_LALT, TG(_1_LOWER), TO(_0_BASE), TO(_0_BASE), TG(_2_RAISE), MU_TOGG, KC_RGUI, KC_MENU, KC_RCTL
+    KC_LCTL, XXXXXXX, KC_LGUI, KC_LALT, LLCK_LOWER, TO(_0_BASE), TO(_0_BASE), LLCK_RAISE, MU_TOGG, KC_RGUI, KC_MENU, KC_RCTL
 ),
 
 /* Extra  (Lower + Raise)                                                  LED: orange
@@ -146,14 +151,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | Shift|   Z  |   X  |   C  |   V  |      |      |      | MS_1 | MS_3 | MS_2 |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | LCtrl| FN/M | LGUI | LALT | MS_4 |    Space    | MS_5 | MS_L | MS_U | MS_D | MS_R |
+ * | LCtrl| FN/M | LGUI | LALT | MS_4 |    Space    | MS_5 | MS_L | MS_D | MS_U | MS_R |
  * `-----------------------------------------------------------------------------------'
  */
 [_5_MOUSE] = LAYOUT_planck_grid(
     KC_TAB,  XXXXXXX, MS_WHLU, XXXXXXX, KC_R,    KC_T,    KC_Y,    KC_U,    MS_ACL0, MS_ACL1, MS_ACL2, TO(_0_BASE),
     KC_ESC,  MS_WHLL, MS_WHLD, MS_WHLR, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
     KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    XXXXXXX, XXXXXXX, XXXXXXX, MS_BTN1, MS_BTN3, MS_BTN2, XXXXXXX,
-    KC_LCTL, FN_APP,  KC_LGUI, KC_LALT, MS_BTN4, KC_SPC,  KC_SPC,  MS_BTN5, MS_LEFT, MS_UP,   MS_DOWN, MS_RGHT
+    KC_LCTL, FN_APP,  KC_LGUI, KC_LALT, MS_BTN4, KC_SPC,  KC_SPC,  MS_BTN5, MS_LEFT, MS_DOWN, MS_UP,   MS_RGHT
 ),
 
 /* KbdCfg  (hold Lower + Raise + FN/M, or DIP switch 0)                    LED: white
@@ -195,6 +200,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 };
 // clang-format on
+
+/* ---------------------------------------------------------- Key overrides -- */
+// Shift + Backspace = Delete (Del is no longer on Lower).
+const key_override_t delete_key_override = ko_make_basic(MOD_MASK_SHIFT, KC_BSPC, KC_DEL);
+const key_override_t *key_overrides[] = {&delete_key_override};
 
 /* ------------------------------------------------------ Underglow layers --
  * The base layer has no entry: it shows the regular RGBLight effect.
@@ -251,6 +261,10 @@ float plover_gb_song[][2] = SONG(PLOVER_GOODBYE_SOUND);
 #endif
 
 layer_state_t layer_state_set_user(layer_state_t state) {
+    // Raise is a keypad: make sure Num Lock is on when it turns on.
+    if (layer_state_cmp(state, _2_RAISE) && !layer_state_cmp(layer_state, _2_RAISE) && !host_keyboard_led_state().num_lock) {
+        tap_code(KC_NUM);
+    }
     rgblight_set_layer_state(LIT_LOWER, layer_state_cmp(state, _1_LOWER));
     rgblight_set_layer_state(LIT_RAISE, layer_state_cmp(state, _2_RAISE));
     rgblight_set_layer_state(LIT_FN, layer_state_cmp(state, _3_FN));
@@ -303,6 +317,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         case LED_TST:
             if (record->event.pressed) {
                 LED_TEST_BLINK();
+            }
+            return false;
+        case LLCK_LOWER:
+            if (record->event.pressed) {
+                layer_lock_invert(_1_LOWER);
+            }
+            return false;
+        case LLCK_RAISE:
+            if (record->event.pressed) {
+                layer_lock_invert(_2_RAISE);
             }
             return false;
     }

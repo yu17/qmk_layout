@@ -11,6 +11,12 @@ Differences from the Planck:
 * **Per-key layer colours:** on Lower/Raise/Fn/Extra/Mouse/KbdCfg, keys that
   do something light in the layer colour and unused keys go dark. Shift turns
   white while Caps Lock / Caps Word is on.
+* **Raise = numpad**, same as the Planck. Num Lock is switched on
+  automatically only over USB; when wireless, use the Num Lock key on Raise.
+* **Lock a layer:** Fn + Lower / Fn + Raise; Fn + Space releases it.
+* **Shift + Backspace = Delete** is a Vial key override (slot 0), written
+  after every flash / factory reset; edit or delete it in the Vial app.
+* Arrows are Left, Down, Up, Right, as on the Planck.
 * Lower/Raise use QMK tri-layer keys (`TL_LOWR`/`TL_UPPR`), and Fn is
   `LT(3, App)`. The vendor library treats the keycodes `MO(2)`/`MO(3)` as its
   own Fn key, so this keymap must not use them.
@@ -24,7 +30,7 @@ Differences from the Planck:
 | Fn + Tab / Q / W / E / R | USB / BT1 / BT2 / BT3 / 2.4 GHz (hold = pair) | KbdCfg + same keys |
 | Fn + T | Next key-light effect | KbdCfg + T (also Extra + Z); KbdCfg + B = previous |
 | Fn + Backspace | All lights on/off | KbdCfg + Backspace (also Extra + A) |
-| Fn + Up / Down | Brightness + / - | KbdCfg + Up / Down |
+| Fn + Up / Down | Brightness + / - | KbdCfg + Up / Down (same keys, new bottom-row order) |
 | Fn + Left / Right | Effect speed - / + | KbdCfg + Left / Right |
 | Fn + Enter | Next ambient (side/logo) light effect | KbdCfg + Enter (also KbdCfg + V, Extra + S) |
 | Fn + Left Alt | Wireless sleep timer 1/3/10/30 min (T flashes red/green/blue/white) | KbdCfg + X |

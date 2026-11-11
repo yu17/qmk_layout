@@ -23,6 +23,7 @@
 
 #include QMK_KEYBOARD_H
 #include "rdr_common.h"
+#include "dynamic_keymap.h"
 
 enum geonix_layers { // same numbering as the Planck keymap
     _BASE,   // 0
@@ -32,6 +33,11 @@ enum geonix_layers { // same numbering as the Planck keymap
     _EXTRA,  // 4  Lower + Raise (tri-layer adjust)
     _MOUSE,  // 5
     _KBDCFG, // 6  hold Lower + Raise + Fn
+};
+
+enum yu17_keycodes {
+    LLCK_LOWER = QK_USER, // Fn + Lower: lock/unlock the Lower layer
+    LLCK_RAISE,           // Fn + Raise: lock/unlock the Raise layer
 };
 
 #define LOWER TL_LOWR
@@ -49,50 +55,53 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | Shift|   Z  |   X  |   C  |   V  |   B  |   N  |   M  |   ,  |   .  |   /  |Enter |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | LCtrl| FN/M | LGUI | LALT | Lower| Space| Space| Raise| Left |   Up | Down |Right |
+ * | LCtrl| FN/M | LGUI | LALT | Lower| Space| Space| Raise| Left | Down |  Up  |Right |
  * `-----------------------------------------------------------------------------------'
  */
 [_BASE] = LAYOUT_tkl_ansi(
     KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,
     KC_ESC,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
     KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_ENT ,
-    KC_LCTL, FN_APP,  KC_LGUI, KC_LALT, LOWER,   KC_SPC,  KC_SPC,  RAISE,   KC_LEFT, KC_UP,   KC_DOWN, KC_RGHT
+    KC_LCTL, FN_APP,  KC_LGUI, KC_LALT, LOWER,   KC_SPC,  KC_SPC,  RAISE,   KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT
 ),
 
 /* Lower                                                                   LED: green
  * ,-----------------------------------------------------------------------------------.
  * |   `  |   1  |   2  |   3  |   4  |   5  |   6  |   7  |   8  |   9  |   0  | Bksp |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Esc  |CapsWd|      |      |      | LLock| LLock|      |      |   -  |   =  | Del  |
+ * | Esc  |CapsWd|      |      |      |      |      |      |      |   -  |   =  |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | Shift|      |      |      |      |      |      |      |   [  |   ]  |   \  |Enter |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | LCtrl| FN/M | LGUI | LALT |      | Space| Space| Extra| Home | PgUp | PgDn | End  |
+ * | LCtrl| FN/M | LGUI | LALT |      | Space| Space| Extra| Home | PgDn | PgUp | End  |
  * `-----------------------------------------------------------------------------------'
  */
 [_LOWER] = LAYOUT_tkl_ansi(
     KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_BSPC,
-    KC_ESC,  CW_TOGG, XXXXXXX, XXXXXXX, XXXXXXX, QK_LLCK, QK_LLCK, XXXXXXX, XXXXXXX, KC_MINS, KC_EQL,  KC_DEL,
+    KC_ESC,  CW_TOGG, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_MINS, KC_EQL,  XXXXXXX,
     KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LBRC, KC_RBRC, KC_BSLS, KC_ENT,
-    KC_LCTL, FN_APP,  KC_LGUI, KC_LALT, XXXXXXX, KC_SPC,  KC_SPC,  RAISE,   KC_HOME, KC_PGUP, KC_PGDN, KC_END
+    KC_LCTL, FN_APP,  KC_LGUI, KC_LALT, XXXXXXX, KC_SPC,  KC_SPC,  RAISE,   KC_HOME, KC_PGDN, KC_PGUP, KC_END
 ),
 
-/* Raise                                                                   LED: purple
+/* Raise  (numpad; left half = normal keys, e.g. WASD for games)          LED: purple
+ * Lock it with Fn + Raise; Fn + Space (or Fn + Raise again) unlocks.
+ * Keypad codes (KC_P*), so games/sims see real numpad keys; Num Lock is
+ * switched on automatically when this layer turns on (wired USB only).
  * ,-----------------------------------------------------------------------------------.
- * |   ~  |   !  |   @  |   #  |   $  |   %  |   ^  |   &  |   *  |   (  |   )  | Bksp |
+ * | Tab  |   Q  |   W  |   E  |   R  |   T  |      |NumLck|  7   |  8   |  9   |  *   |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Esc  |CapsWd|      |      |      | LLock| LLock|      |      |   _  |   +  | Del  |
+ * | Esc  |   A  |   S  |   D  |   F  |   G  |  Up  |      |  4   |  5   |  6   |  -   |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Shift|      |      |      |      |      |      |      |   {  |   }  |   |  |Enter |
+ * | Shift|   Z  |   X  |   C  |   V  | Left | Down |Right |  1   |  2   |  3   |  +   |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | LCtrl| FN/M | LGUI | LALT | Extra| Space| Space|      | Home | PgUp | PgDn | End  |
+ * | LCtrl| FN/M | LGUI | LALT | Extra| Space| Space|(held)|  0   |  .   |  /   |Enter |
  * `-----------------------------------------------------------------------------------'
  */
 [_RAISE] = LAYOUT_tkl_ansi(
-    KC_TILD, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC, KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_BSPC,
-    KC_ESC,  CW_TOGG, XXXXXXX, XXXXXXX, XXXXXXX, QK_LLCK, QK_LLCK, XXXXXXX, XXXXXXX, KC_UNDS, KC_PLUS, KC_DEL,
-    KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LCBR, KC_RCBR, KC_PIPE, KC_ENT,
-    KC_LCTL, FN_APP,  KC_LGUI, KC_LALT, LOWER,   KC_SPC,  KC_SPC,  XXXXXXX, KC_HOME, KC_PGUP, KC_PGDN, KC_END
+    _______, _______, _______, _______, _______, _______, XXXXXXX, KC_NUM,  KC_P7,   KC_P8,   KC_P9,   KC_PAST,
+    _______, _______, _______, _______, _______, _______, KC_UP,   XXXXXXX, KC_P4,   KC_P5,   KC_P6,   KC_PMNS,
+    _______, _______, _______, _______, _______, KC_LEFT, KC_DOWN, KC_RGHT, KC_P1,   KC_P2,   KC_P3,   KC_PPLS,
+    _______, _______, _______, _______, LOWER,   _______, _______, _______, KC_P0,   KC_PDOT, KC_PSLS, KC_PENT
 ),
 
 /* Fn                                                                      LED: lemon
@@ -103,14 +112,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | Shift| Brit-| Brit+|      |      |      |      |      |      | Insrt| Del  |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | LCtrl|      | LGUI | LALT |TG_LOW|TO_BAS|TO_BAS|TG_RIS|      | RGUI | MENU |RCTRL |
+ * | LCtrl|      | LGUI | LALT |LckLow|TO_BAS|TO_BAS|LckRai|      | RGUI | MENU |RCTRL |
  * `-----------------------------------------------------------------------------------'
  */
 [_FN] = LAYOUT_tkl_ansi(
     KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,
     KC_MUTE, KC_VOLD, KC_VOLU, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_SCRL, KC_PAUS, KC_PSCR,
     KC_LSFT, KC_BRID, KC_BRIU, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_INS,  KC_DEL,  XXXXXXX,
-    KC_LCTL, XXXXXXX, KC_LGUI, KC_LALT, TG(_LOWER), TO(_BASE), TO(_BASE), TG(_RAISE), XXXXXXX, KC_RGUI, KC_MENU, KC_RCTL
+    KC_LCTL, XXXXXXX, KC_LGUI, KC_LALT, LLCK_LOWER, TO(_BASE), TO(_BASE), LLCK_RAISE, XXXXXXX, KC_RGUI, KC_MENU, KC_RCTL
 ),
 
 /* Extra  (Lower + Raise)                                                  LED: orange
@@ -141,14 +150,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | Shift|   Z  |   X  |   C  |   V  |      |      |      | MS_1 | MS_3 | MS_2 |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | LCtrl| FN/M | LGUI | LALT | MS_4 | Space| Space| MS_5 | MS_L | MS_U | MS_D | MS_R |
+ * | LCtrl| FN/M | LGUI | LALT | MS_4 | Space| Space| MS_5 | MS_L | MS_D | MS_U | MS_R |
  * `-----------------------------------------------------------------------------------'
  */
 [_MOUSE] = LAYOUT_tkl_ansi(
     KC_TAB,  XXXXXXX, MS_WHLU, XXXXXXX, KC_R,    KC_T,    KC_Y,    KC_U,    MS_ACL0, MS_ACL1, MS_ACL2, TO(_BASE),
     KC_ESC,  MS_WHLL, MS_WHLD, MS_WHLR, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
     KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    XXXXXXX, XXXXXXX, XXXXXXX, MS_BTN1, MS_BTN3, MS_BTN2, XXXXXXX,
-    KC_LCTL, FN_APP,  KC_LGUI, KC_LALT, MS_BTN4, KC_SPC,  KC_SPC,  MS_BTN5, MS_LEFT, MS_UP,   MS_DOWN, MS_RGHT
+    KC_LCTL, FN_APP,  KC_LGUI, KC_LALT, MS_BTN4, KC_SPC,  KC_SPC,  MS_BTN5, MS_LEFT, MS_DOWN, MS_UP,   MS_RGHT
 ),
 
 /* KbdCfg  (hold Lower + Raise + Fn)                                     LED: white
@@ -161,7 +170,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |      | Batt |Sleep |LowLat|Ambnt |RGBMD-|      |      |LEDtst|      |      |Ambnt |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |Reset3s      |      |Spd-  |Brgt+ |Brgt- |Spd+  |
+ * |      |      |      |      |      |Reset3s      |      |Spd-  |Brgt- |Brgt+ |Spd+  |
  * `-----------------------------------------------------------------------------------'
  *   BT1-3 / 2.4G: tap = connect, hold = pair (vendor behaviour).
  *   Batt: show battery level on the number row. Sleep: cycle sleep timer.
@@ -171,11 +180,42 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     MD_USB,  MD_BLE1, MD_BLE2, MD_BLE3, MD_24G,  UG_NEXT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, RGB_RTOG,
     XXXXXXX, UG_HUEU, UG_HUED, UG_SATU, UG_SATD, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
     XXXXXXX, QK_BAT,  TIME_ST, QK_DEB,  LOGO_MOD, UG_PREV, XXXXXXX, XXXXXXX, TEST_CL, XXXXXXX, XXXXXXX, LOGO_MOD,
-    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, U_EE_CLR, XXXXXXX, XXXXXXX, UG_SPDD, UG_VALU, UG_VALD, UG_SPDU
+    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, U_EE_CLR, XXXXXXX, XXXXXXX, UG_SPDD, UG_VALD, UG_VALU, UG_SPDU
 ),
 
 };
 // clang-format on
+
+/* ------------------------------------------------- Default key override --
+ * Shift + Backspace = Delete. Vial keeps key overrides in EEPROM and ignores
+ * a keymap's key_overrides[], so seed Vial slot 0 whenever Vial's EEPROM was
+ * just reset (new firmware or factory reset). It then shows up - and can be
+ * edited or deleted - in the Vial app.
+ */
+static bool vial_data_reset = false;
+
+void via_init_kb(void) { // runs right before VIA validates (and maybe resets) its EEPROM
+    if (!via_eeprom_is_valid()) vial_data_reset = true;
+}
+
+void eeconfig_init_user(void) { // full settings reset
+    vial_data_reset = true;
+}
+
+static void seed_key_overrides(void) {
+    vial_key_override_entry_t ko = {
+        .trigger          = KC_BSPC,
+        .replacement      = KC_DEL,
+        .layers           = 0xFFFF,
+        .trigger_mods     = MOD_MASK_SHIFT,
+        .negative_mod_mask = 0,
+        .suppressed_mods  = MOD_MASK_SHIFT,
+        .options          = vial_ko_enabled | vial_ko_option_activation_trigger_down |
+                   vial_ko_option_activation_required_mod_down | vial_ko_option_activation_negative_mod_up,
+    };
+    dynamic_keymap_set_key_override(0, &ko);
+    vial_init(); // reload tap dance / combos / key overrides from EEPROM
+}
 
 /* ------------------------------------------------------ Windows-only --
  * The vendor post-init (inside keyboard_post_init_user, defined by the board)
@@ -184,7 +224,38 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 void keyboard_post_init_kb(void) {
     Keyboard_Info.Mac_Win_Mode = INIT_WIN_MODE;
+    if (vial_data_reset) seed_key_overrides();
     keyboard_post_init_user();
+}
+
+/* ------------------------------------------------------------ Lock keys --
+ * The board file owns process_record_user (it feeds the wireless library),
+ * so handle this keymap's own keycodes after it, in process_record_kb.
+ */
+bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
+    if (!process_record_user(keycode, record)) return false;
+    switch (keycode) {
+        case LLCK_LOWER:
+            if (record->event.pressed) layer_lock_invert(_LOWER);
+            return false;
+        case LLCK_RAISE:
+            if (record->event.pressed) layer_lock_invert(_RAISE);
+            return false;
+    }
+    return true;
+}
+
+/* -------------------------------------------------------- Auto Num Lock --
+ * Raise is a keypad: switch Num Lock on when it turns on. Only over USB -
+ * whether the wireless link reports the host's Num Lock state back is
+ * unknown, and guessing wrong would flip Num Lock off instead.
+ */
+layer_state_t layer_state_set_user(layer_state_t state) {
+    if (Keyboard_Info.Key_Mode == QMK_USB_MODE && layer_state_cmp(state, _RAISE) && !layer_state_cmp(layer_state, _RAISE) &&
+        !host_keyboard_led_state().num_lock) {
+        tap_code(KC_NUM);
+    }
+    return state;
 }
 
 /* ------------------------------------------------- Per-key layer colours --

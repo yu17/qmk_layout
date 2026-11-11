@@ -37,8 +37,8 @@
 // Base, Lower, Raise, Fn, Extra, Mouse, KbdCfg
 #define DYNAMIC_KEYMAP_LAYER_COUNT 7
 
-// Layer Lock (QK_LLCK): unlock automatically after 60 s without key presses.
-#define LAYER_LOCK_IDLE_TIMEOUT 60000
+// Layer Lock (Fn + Lower / Fn + Raise) has no idle timeout: a locked numpad
+// must not drop out mid-game. Unlock with Fn + Space or the same lock key.
 
 // Tri-layer: Lower + Raise -> Extra
 #define TRI_LAYER_LOWER_LAYER 1

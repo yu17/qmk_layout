@@ -65,8 +65,8 @@
 #define RGBLIGHT_EFFECT_BREATHE_MAX 255
 
 /* ------------------------------------------------------------- Features -- */
-// Layer Lock (QK_LLCK): unlock automatically after 60 s without key presses.
-#define LAYER_LOCK_IDLE_TIMEOUT 60000
+// Layer Lock (Fn + Lower / Fn + Raise) has no idle timeout: a locked numpad
+// must not drop out mid-game. Unlock with Fn + Space or the same lock key.
 
 /* ------------------------------------------------------------------ USB -- */
 // Claim little bus power so iPads/iPhones accept the keyboard.

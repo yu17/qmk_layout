@@ -3,9 +3,19 @@
 Modified from the default Planck layout. Each layer is drawn in the comments of
 `keymap.c`.
 
-Layers: Base, Lower (green), Raise (purple), Fn (lemon, hold FN/M),
+Layers: Base, Lower (green), Raise (purple, numpad), Fn (lemon, hold Fn),
 Extra (orange, Lower + Raise), Mouse (red, Extra -> Mouse, leave with the
-top-right key), KbdCfg (white, Lower + Raise + FN/M), Plover (magenta).
+top-right key), Settings/KbdCfg (white, Lower + Raise + Fn), Plover (magenta).
+A visual map of every layer: `make docs` -> `docs/layout.html`.
+
+* **Raise = numpad** on the right (keypad codes, Num Lock key; Num Lock is
+  switched on automatically when Raise turns on), arrows in the middle
+  (inverted T on H / B N M), left half = normal keys so WASD games work.
+* **Lock a layer:** Fn + Lower / Fn + Raise. Fn + Space (or the same lock
+  combo) releases it. No idle timeout.
+* **Shift + Backspace = Delete** (key override); Del is no longer on Lower.
+* Arrows are Left, Down, Up, Right (PgDn/PgUp on Lower and the mouse arrows
+  follow the same order).
 
 ## Underglow (9 hand-soldered WS2812 LEDs)
 
