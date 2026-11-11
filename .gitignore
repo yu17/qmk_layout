@@ -1,0 +1,10 @@
+.venv/
+.qmk/
+.build/
+*.bin
+*.hex
+*.uf2
+*.elf
+*.map
+
+!archive/*.bin

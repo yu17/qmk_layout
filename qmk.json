@@ -1,0 +1,6 @@
+{
+    "userspace_version": "1.1",
+    "build_targets": [
+        ["planck/rev6_drop", "yu17"]
+    ]
+}

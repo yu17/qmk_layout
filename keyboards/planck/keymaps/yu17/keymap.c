@@ -1,4 +1,5 @@
 /* Copyright 2015-2021 Jack Humbert
+ * Customised by yu17.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,33 +22,32 @@
 #endif
 
 enum planck_layers {
-  _0_BASE,
-  _1_LOWER,
-  _2_RAISE,
-  _3_FN,
-  _4_EXTRA,
-  _5_MOUSE,
-  _6_KBDCFG,
-  _PLOVER,
+    _0_BASE,
+    _1_LOWER,
+    _2_RAISE,
+    _3_FN,
+    _4_EXTRA,
+    _5_MOUSE,
+    _6_KBDCFG,
+    _PLOVER,
 };
 
 enum planck_keycodes {
-  QWERTY = SAFE_RANGE,
-  COLEMAK,
-  DVORAK,
-  PLOVER,
-  BACKLIT,
-  EXT_PLV,
-  LIGHT_OFF,
-  LIGHT_ON
+    PLOVER = SAFE_RANGE,
+    EXT_PLV,
+    LIGHT_OFF, // base underglow off (layer colours keep working)
+    LIGHT_ON,  // base underglow on
+    LED_TST,   // blink the rainbow LED test pattern
 };
 
 #define LOWER MO(_1_LOWER)
 #define RAISE MO(_2_RAISE)
+#define FN_APP LT(_3_FN, KC_APP)
 
+// clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
-/* Qwerty
+/* Qwerty                                                                  LED: base effect
  * ,-----------------------------------------------------------------------------------.
  * | Tab  |   Q  |   W  |   E  |   R  |   T  |   Y  |   U  |   I  |   O  |   P  | Bksp |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -62,14 +62,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC,
     KC_ESC,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
     KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_ENT ,
-    KC_LCTL, LT(_3_FN, KC_APP), KC_LGUI, KC_LALT, MO(_1_LOWER), KC_SPC, KC_SPC, MO(_2_RAISE), KC_LEFT, KC_UP, KC_DOWN, KC_RGHT
+    KC_LCTL, FN_APP,  KC_LGUI, KC_LALT, LOWER,   KC_SPC,  KC_SPC,  RAISE,   KC_LEFT, KC_UP,   KC_DOWN, KC_RGHT
 ),
 
-/* Lower
+/* Lower                                                                   LED: green
  * ,-----------------------------------------------------------------------------------.
  * |   `  |   1  |   2  |   3  |   4  |   5  |   6  |   7  |   8  |   9  |   0  | Bksp |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Esc  |      |      |      |      |      |      |      |      |   -  |   =  | Del  |
+ * | Esc  |CapsWd|      |      |      | LLock| LLock|      |      |   -  |   =  | Del  |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | Shift|      |      |      |      |      |      |      |   [  |   ]  |   \  |Enter |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -77,17 +77,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * `-----------------------------------------------------------------------------------'
  */
 [_1_LOWER] = LAYOUT_planck_grid(
-    KC_GRV,     KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,  KC_BSPC,
-    KC_ESC,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_MINS,  KC_EQL,  KC_DEL,
-    KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LBRC, KC_RBRC, KC_BSLS,  KC_ENT,
-    KC_LCTL, LT(_3_FN, KC_APP), KC_LGUI, KC_LALT, XXXXXXX, KC_SPC, KC_SPC, MO(_4_EXTRA), KC_HOME, KC_PGUP, KC_PGDN, KC_END
+    KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_BSPC,
+    KC_ESC,  CW_TOGG, XXXXXXX, XXXXXXX, XXXXXXX, QK_LLCK, QK_LLCK, XXXXXXX, XXXXXXX, KC_MINS, KC_EQL,  KC_DEL,
+    KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LBRC, KC_RBRC, KC_BSLS, KC_ENT,
+    KC_LCTL, FN_APP,  KC_LGUI, KC_LALT, XXXXXXX, KC_SPC,  KC_SPC,  MO(_4_EXTRA), KC_HOME, KC_PGUP, KC_PGDN, KC_END
 ),
 
-/* Raise
+/* Raise                                                                   LED: purple
  * ,-----------------------------------------------------------------------------------.
  * |   ~  |   !  |   @  |   #  |   $  |   %  |   ^  |   &  |   *  |   (  |   )  | Bksp |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Esc  |      |      |      |      |      |      |      |      |   _  |   +  | Del  |
+ * | Esc  |CapsWd|      |      |      | LLock| LLock|      |      |   _  |   +  | Del  |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | Shift|      |      |      |      |      |      |      |   {  |   }  |   |  |Enter |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -95,13 +95,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * `-----------------------------------------------------------------------------------'
  */
 [_2_RAISE] = LAYOUT_planck_grid(
-    KC_TILD, KC_EXLM,   KC_AT, KC_HASH,  KC_DLR, KC_PERC, KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_BSPC,
-    KC_ESC,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_UNDS, KC_PLUS, KC_DEL,
+    KC_TILD, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC, KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_BSPC,
+    KC_ESC,  CW_TOGG, XXXXXXX, XXXXXXX, XXXXXXX, QK_LLCK, QK_LLCK, XXXXXXX, XXXXXXX, KC_UNDS, KC_PLUS, KC_DEL,
     KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LCBR, KC_RCBR, KC_PIPE, KC_ENT,
-    KC_LCTL, LT(_3_FN, KC_APP), KC_LGUI, KC_LALT, MO(_4_EXTRA), KC_SPC, KC_SPC, XXXXXXX, KC_HOME, KC_PGUP, KC_PGDN, KC_END
+    KC_LCTL, FN_APP,  KC_LGUI, KC_LALT, MO(_4_EXTRA), KC_SPC, KC_SPC, XXXXXXX, KC_HOME, KC_PGUP, KC_PGDN, KC_END
 ),
 
-/* Fn
+/* Fn                                                                      LED: lemon
  * ,-----------------------------------------------------------------------------------.
  * |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F7  |  F8  |  F9  |  F10 |  F11 |  F12 |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -109,78 +109,73 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | Shift| Brit-| Brit+|      |      |      |      |      |      | Insrt| Del  |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | LCtrl|      | LGUI | LALT |TG_LOW|   TO_BASE   |TG_RIS|      | RGUI | MENU |RCTRL |
+ * | LCtrl|      | LGUI | LALT |TG_LOW|   TO_BASE   |TG_RIS|MusTog| RGUI | MENU |RCTRL |
  * `-----------------------------------------------------------------------------------'
  */
 [_3_FN] = LAYOUT_planck_grid(
-    KC_F1,     KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,  KC_F10,  KC_F11,  KC_F12,
+    KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,
     KC_MUTE, KC_VOLD, KC_VOLU, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_SCRL, KC_PAUS, KC_PSCR,
-    KC_LSFT, KC_BRID, KC_BRIU, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  KC_INS,  KC_DEL, XXXXXXX,
-    KC_LCTL, XXXXXXX, KC_LGUI, KC_LALT, TG(_1_LOWER), TO(_0_BASE), TO(_0_BASE), TG(_2_RAISE),  MU_TOGG, KC_RGUI, KC_MENU, KC_RCTL
+    KC_LSFT, KC_BRID, KC_BRIU, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_INS,  KC_DEL,  XXXXXXX,
+    KC_LCTL, XXXXXXX, KC_LGUI, KC_LALT, TG(_1_LOWER), TO(_0_BASE), TO(_0_BASE), TG(_2_RAISE), MU_TOGG, KC_RGUI, KC_MENU, KC_RCTL
 ),
 
-/* Extra
+/* Extra  (Lower + Raise)                                                  LED: orange
  * ,-----------------------------------------------------------------------------------.
  * |  F13 |  F14 |  F15 |  F16 |  F17 |  F18 |  F19 |  F20 |  F21 |  F22 |  F23 |  F24 |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Esc  |RGB_MP|RGB_MB|      |      |      |      |      |      |Audoff|Aud on|      |
+ * | Esc  |LgtOff|LgtOn |      |      |      |      |      |      |Audoff|Aud on|      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Shift|RGBTOG|RGBHUI|RGBSAI|RGBVAI|TermOf|TermOn|NKOFF | NKON |GUIOFF|GUION | Mouse|
+ * | Shift|RGBTOG|RGBHUI|RGBSAI|RGBVAI|      |      |NKOFF | NKON |GUIOFF|GUION | Mouse|
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | LCtrl|      | LGUI | LALT |      |    Space    |      |      |      | Reset|      |
+ * | LCtrl|KbdCfg| LGUI | LALT |      |    Space    |      |      |      | Boot |      |
  * `-----------------------------------------------------------------------------------'
+ *   KbdCfg is a hold key: Lower + Raise + (FN/M position) -> KbdCfg layer.
  */
-//[_4_EXTRA] = LAYOUT_planck_grid(
-//    KC_F13,   KC_F14,  KC_F15,  KC_F16,  KC_F17,  KC_F18,  KC_F19,  KC_F20,  KC_F21,  KC_F22,  KC_F23,  KC_F24,
-//    KC_ESC,  LIGHT_OFF,  LIGHT_ON, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  AU_OFF,   AU_ON, XXXXXXX,
-//    KC_LSFT, RGB_TOG, RGB_HUI, RGB_SAI, RGB_VAI,TERM_OFF, TERM_ON,  NK_OFF,   NK_ON, GUI_OFF,  GUI_ON, TO(_5_MOUSE),
-//    KC_LCTL, XXXXXXX, KC_LGUI, KC_LALT, XXXXXXX,  KC_SPC,  KC_SPC, XXXXXXX, XXXXXXX, XXXXXXX,   RESET, XXXXXXX
-//),
 [_4_EXTRA] = LAYOUT_planck_grid(
-    KC_F13,   KC_F14,  KC_F15,  KC_F16,  KC_F17,  KC_F18,  KC_F19,  KC_F20,  KC_F21,  KC_F22,  KC_F23,  KC_F24,
-    KC_ESC,LIGHT_OFF,LIGHT_ON, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  AU_OFF,   AU_ON, XXXXXXX,
-    KC_LSFT, RGB_TOG, BL_DOWN,   BL_UP, BL_BRTG, XXXXXXX, XXXXXXX,  NK_OFF,   NK_ON,  GU_OFF,   GU_ON, TO(_5_MOUSE),
-    KC_LCTL, XXXXXXX, KC_LGUI, KC_LALT, XXXXXXX,  KC_SPC,  KC_SPC, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT, XXXXXXX
+    KC_F13,  KC_F14,    KC_F15,   KC_F16,  KC_F17,  KC_F18,  KC_F19,  KC_F20,  KC_F21,  KC_F22,  KC_F23,  KC_F24,
+    KC_ESC,  LIGHT_OFF, LIGHT_ON, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, AU_OFF,  AU_ON,   XXXXXXX,
+    KC_LSFT, UG_TOGG,   UG_HUEU,  UG_SATU, UG_VALU, XXXXXXX, XXXXXXX, NK_OFF,  NK_ON,   GU_OFF,  GU_ON,   TO(_5_MOUSE),
+    KC_LCTL, MO(_6_KBDCFG), KC_LGUI, KC_LALT, XXXXXXX, KC_SPC, KC_SPC, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT, XXXXXXX
 ),
 
-/* Mouse
+/* Mouse  (Extra -> Mouse; leave with ToBase)                              LED: red
  * ,-----------------------------------------------------------------------------------.
- * | Tab  |      | MsWhU|      |      |      |      |      |MsSpd0|MsSpd1|MsSpd2|ToBase|
+ * | Tab  |      | MsWhU|      |   R  |   T  |   Y  |   U  |MsSpd0|MsSpd1|MsSpd2|ToBase|
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | Esc  | MsWhL| MsWhD| MsWhR|      |      |      |      |      |      |      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Shift|      |      |      |      |      |      |      | MS_1 | MS_3 | MS_2 |      |
+ * | Shift|   Z  |   X  |   C  |   V  |      |      |      | MS_1 | MS_3 | MS_2 |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | LCtrl| FN/M | LGUI | LALT | MS_4 |    Space    | MS_5 | MS_L | MS_U | MS_D | MS_R |
  * `-----------------------------------------------------------------------------------'
  */
 [_5_MOUSE] = LAYOUT_planck_grid(
-    KC_TAB,  XXXXXXX, KC_WH_U, XXXXXXX,    KC_R,    KC_T,    KC_Y,    KC_U, KC_ACL0, KC_ACL1, KC_ACL2, TO(_0_BASE),
-    KC_ESC,  KC_WH_L, KC_WH_D, KC_WH_R, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-    KC_LSFT,    KC_Z,    KC_X,    KC_C,    KC_V, XXXXXXX, XXXXXXX, XXXXXXX, KC_BTN1, KC_BTN3, KC_BTN2, XXXXXXX,
-    KC_LCTL, LT(_3_FN, KC_APP), KC_LGUI, KC_LALT, KC_BTN4,  KC_SPC,  KC_SPC, KC_BTN5, KC_MS_L, KC_MS_U, KC_MS_D, KC_MS_R
+    KC_TAB,  XXXXXXX, MS_WHLU, XXXXXXX, KC_R,    KC_T,    KC_Y,    KC_U,    MS_ACL0, MS_ACL1, MS_ACL2, TO(_0_BASE),
+    KC_ESC,  MS_WHLL, MS_WHLD, MS_WHLR, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+    KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    XXXXXXX, XXXXXXX, XXXXXXX, MS_BTN1, MS_BTN3, MS_BTN2, XXXXXXX,
+    KC_LCTL, FN_APP,  KC_LGUI, KC_LALT, MS_BTN4, KC_SPC,  KC_SPC,  MS_BTN5, MS_LEFT, MS_UP,   MS_DOWN, MS_RGHT
 ),
 
-/* KbdCfg
+/* KbdCfg  (hold Lower + Raise + FN/M, or DIP switch 0)                    LED: white
  *                      v------------------------RGB CONTROL--------------------v
  * ,-----------------------------------------------------------------------------------.
- * |      | Reset|Debug | RGB  |RGBMOD| HUE+ | HUE- | SAT+ | SAT- |BRGTH+|BRGTH-|  Del |
+ * |      |Reboot|Debug | RGB  |RGBMOD| HUE+ | HUE- | SAT+ | SAT- |BRGTH+|BRGTH-|  Del |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |MUSmod|Aud on|Audoff|AGnorm|AGswap|Qwerty|Colemk|Dvorak|Plover|      |
+ * |      |      |MUSmod|Aud on|Audoff|AGnorm|AGswap|      |      |      |Plover|      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |Voice-|Voice+|Mus on|Musoff|MIDIon|MIDIof|TermOn|TermOf|      |      |      |
+ * |      |Voice-|Voice+|Mus on|Musoff|RGBMD-|SPEED+|SPEED-|LEDtst|      |      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |             |      |      |      |      |      |
+ * |      |      |      |      |      |             |      |      |      |      |EEPclr|
  * `-----------------------------------------------------------------------------------'
  */
 [_6_KBDCFG] = LAYOUT_planck_grid(
-    XXXXXXX,  QK_RBT, DB_TOGG, RGB_TOG, RGB_MOD, RGB_HUI, RGB_HUD, RGB_SAI, RGB_SAD,  RGB_VAI, RGB_VAD, KC_DEL ,
-    XXXXXXX, XXXXXXX, MU_NEXT,   AU_ON,  AU_OFF, AG_NORM, AG_SWAP,  QWERTY, COLEMAK,   DVORAK,  PLOVER, XXXXXXX,
-    XXXXXXX, AU_PREV, AU_NEXT,   MU_ON,  MU_OFF,   MI_ON,  MI_OFF, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX,
-    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX
+    XXXXXXX, QK_RBT,  DB_TOGG, UG_TOGG, UG_NEXT, UG_HUEU, UG_HUED, UG_SATU, UG_SATD, UG_VALU, UG_VALD, KC_DEL,
+    XXXXXXX, XXXXXXX, MU_NEXT, AU_ON,   AU_OFF,  AG_NORM, AG_SWAP, XXXXXXX, XXXXXXX, XXXXXXX, PLOVER,  XXXXXXX,
+    XXXXXXX, AU_PREV, AU_NEXT, MU_ON,   MU_OFF,  UG_PREV, UG_SPDU, UG_SPDD, LED_TST, XXXXXXX, XXXXXXX, XXXXXXX,
+    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, EE_CLR
 ),
 
-/* Plover layer (http://opensteno.org)
+/* Plover layer (http://opensteno.org)                                     LED: magenta
  * ,-----------------------------------------------------------------------------------.
  * |   #  |   #  |   #  |   #  |   #  |   #  |   #  |   #  |   #  |   #  |   #  |   #  |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -199,179 +194,161 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 )
 
 };
+// clang-format on
 
-// How long (in milliseconds) to wait between animation steps for each of the "Solid color breathing" animations
-const uint8_t RGBLED_BREATHING_INTERVALS[] PROGMEM = {30, 20, 10, 5};
-// How long (in milliseconds) to wait between animation steps for each of the "Cycling rainbow" animations
-//const uint8_t RGBLED_RAINBOW_MOOD_INTERVALS[] PROGMEM = {120, 60, 30};
-// How long (in milliseconds) to wait between animation steps for each of the "Swirling rainbow" animations
-//const uint8_t RGBLED_RAINBOW_SWIRL_INTERVALS[] PROGMEM = {100, 50, 20};
-// How long (in milliseconds) to wait between animation steps for each of the "Snake" animations
-//const uint8_t RGBLED_SNAKE_INTERVALS[] PROGMEM = {100, 50, 20};
-// How long (in milliseconds) to wait between animation steps for each of the "Knight" animations
-//const uint8_t RGBLED_KNIGHT_INTERVALS[] PROGMEM = {127, 63, 31};
-// How long (in milliseconds) to wait between animation steps for each of the "Twinkle" animations
-const uint8_t RGBLED_TWINKLE_INTERVALS[] PROGMEM = {50, 25, 10};
-// These control which hues are selected for each of the "Static gradient" modes
-const uint8_t RGBLED_GRADIENT_RANGES[] PROGMEM = {255, 170, 127, 85, 64};
-
-const rgblight_segment_t PROGMEM lit_0_solid_cyan[] = RGBLIGHT_LAYER_SEGMENTS(
-    {0, 9, 116, 64, 255}//lighter than hsv_cyan
+/* ------------------------------------------------------ Underglow layers --
+ * The base layer has no entry: it shows the regular RGBLight effect.
+ * Order matters - later entries are drawn on top, so the highest active
+ * keymap layer wins. HSV values are QMK's 0-255 scale.
+ */
+const rgblight_segment_t PROGMEM lit_lower_green[]   = RGBLIGHT_LAYER_SEGMENTS({0, RGBLIGHT_LED_COUNT, 85, 170, 255});  // slightly lighter than HSV_GREEN
+const rgblight_segment_t PROGMEM lit_raise_purple[]  = RGBLIGHT_LAYER_SEGMENTS({0, RGBLIGHT_LED_COUNT, 170, 170, 255}); // purple-blue
+const rgblight_segment_t PROGMEM lit_fn_lemon[]      = RGBLIGHT_LAYER_SEGMENTS({0, RGBLIGHT_LED_COUNT, 53, 153, 255});  // lemon-yellow-green
+const rgblight_segment_t PROGMEM lit_extra_orange[]  = RGBLIGHT_LAYER_SEGMENTS({0, RGBLIGHT_LED_COUNT, 20, 153, 255});  // lighter than HSV_ORANGE
+const rgblight_segment_t PROGMEM lit_mouse_red[]     = RGBLIGHT_LAYER_SEGMENTS({0, RGBLIGHT_LED_COUNT, 0, 200, 255});   // "you're in mouse mode"
+const rgblight_segment_t PROGMEM lit_kbdcfg_white[]  = RGBLIGHT_LAYER_SEGMENTS({0, RGBLIGHT_LED_COUNT, 0, 0, 160});     // white, dimmed
+const rgblight_segment_t PROGMEM lit_plover_magenta[] = RGBLIGHT_LAYER_SEGMENTS({0, RGBLIGHT_LED_COUNT, 213, 200, 255});
+// Test pattern: every LED a different hue, so a dead LED (or a broken data
+// link - everything after it goes dark) is easy to spot.
+const rgblight_segment_t PROGMEM lit_test_rainbow[] = RGBLIGHT_LAYER_SEGMENTS(
+    {0, 1, 0, 255, 160}, {1, 1, 28, 255, 160}, {2, 1, 57, 255, 160},
+    {3, 1, 85, 255, 160}, {4, 1, 113, 255, 160}, {5, 1, 142, 255, 160},
+    {6, 1, 170, 255, 160}, {7, 1, 198, 255, 160}, {8, 1, 227, 255, 160}
 );
 
-const rgblight_segment_t PROGMEM lit_1_solid_green[] = RGBLIGHT_LAYER_SEGMENTS(
-    {0, 9, 85, 170, 255}//slightly ligher than hsv_green
+enum underglow_layers { // index into underglow_layers[] below
+    LIT_LOWER,
+    LIT_RAISE,
+    LIT_FN,
+    LIT_EXTRA,
+    LIT_MOUSE,
+    LIT_KBDCFG,
+    LIT_PLOVER,
+    LIT_TEST,
+};
+
+const rgblight_segment_t *const PROGMEM underglow_layers[] = RGBLIGHT_LAYERS_LIST(
+    [LIT_LOWER]  = lit_lower_green,
+    [LIT_RAISE]  = lit_raise_purple,
+    [LIT_FN]     = lit_fn_lemon,
+    [LIT_EXTRA]  = lit_extra_orange,
+    [LIT_MOUSE]  = lit_mouse_red,
+    [LIT_KBDCFG] = lit_kbdcfg_white,
+    [LIT_PLOVER] = lit_plover_magenta,
+    [LIT_TEST]   = lit_test_rainbow
 );
 
-const rgblight_segment_t PROGMEM lit_2_solid_purple[] = RGBLIGHT_LAYER_SEGMENTS(
-    {0, 9, 170, 170, 255}//pueple-blue
-);
-
-const rgblight_segment_t PROGMEM lit_3_solid_lemon[] = RGBLIGHT_LAYER_SEGMENTS(
-    {0, 9, 53, 153, 255}//lemon-yellow-green
-);
-
-const rgblight_segment_t PROGMEM lit_4_solid_orange[] = RGBLIGHT_LAYER_SEGMENTS(
-    {0, 9, 20, 153, 255}//light than hsv_orange
-);
-
-const rgblight_segment_t* const PROGMEM backlit_layers[] = RGBLIGHT_LAYERS_LIST(
-    lit_0_solid_cyan,
-    lit_1_solid_green,
-    lit_2_solid_purple,
-    lit_3_solid_lemon,
-    lit_4_solid_orange
-);
+#define LED_TEST_BLINK() rgblight_blink_layer_repeat(LIT_TEST, 300, 3)
 
 void keyboard_post_init_user(void) {
-    // Enable the LED layers
-    rgblight_layers = backlit_layers;
+    rgblight_layers = underglow_layers;
+    LED_TEST_BLINK(); // power-on self test
 }
 
-// Additional operations each time led layer status being updated.
-
-//bool led_update_user(led_t led_state) {
-//    rgblight_set_layer_state(0, 1);
-//    return true;
-//}
-
 #ifdef AUDIO_ENABLE
-  float plover_song[][2]     = SONG(PLOVER_SOUND);
-  float plover_gb_song[][2]  = SONG(PLOVER_GOODBYE_SOUND);
+float plover_song[][2]    = SONG(PLOVER_SOUND);
+float plover_gb_song[][2] = SONG(PLOVER_GOODBYE_SOUND);
 #endif
 
-// Operations each time layer state being updated.
-
 layer_state_t layer_state_set_user(layer_state_t state) {
-  rgblight_set_layer_state(0, layer_state_cmp(state, 0));
-  rgblight_set_layer_state(1, layer_state_cmp(state, 1));
-  rgblight_set_layer_state(2, layer_state_cmp(state, 2));
-  rgblight_set_layer_state(3, layer_state_cmp(state, 3));
-  rgblight_set_layer_state(4, layer_state_cmp(state, 4));
-  return update_tri_layer_state(state, _1_LOWER, _2_RAISE, _6_KBDCFG);
+    rgblight_set_layer_state(LIT_LOWER, layer_state_cmp(state, _1_LOWER));
+    rgblight_set_layer_state(LIT_RAISE, layer_state_cmp(state, _2_RAISE));
+    rgblight_set_layer_state(LIT_FN, layer_state_cmp(state, _3_FN));
+    rgblight_set_layer_state(LIT_EXTRA, layer_state_cmp(state, _4_EXTRA));
+    rgblight_set_layer_state(LIT_MOUSE, layer_state_cmp(state, _5_MOUSE));
+    rgblight_set_layer_state(LIT_KBDCFG, layer_state_cmp(state, _6_KBDCFG));
+    rgblight_set_layer_state(LIT_PLOVER, layer_state_cmp(state, _PLOVER));
+    return state;
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  switch (keycode) {
-    case QWERTY:
-      if (record->event.pressed) {
-        print("mode just switched to qwerty and this is a huge string\n");
-        set_single_persistent_default_layer(_0_BASE);
-      }
-      return false;
-      break;
-    case BACKLIT:
-      if (record->event.pressed) {
-        register_code(KC_RSFT);
-        #ifdef BACKLIGHT_ENABLE
-          backlight_step();
-        #endif
-        #ifdef KEYBOARD_planck_rev5
-          writePinLow(E6);
-        #endif
-      } else {
-        unregister_code(KC_RSFT);
-        #ifdef KEYBOARD_planck_rev5
-          writePinHigh(E6);
-        #endif
-      }
-      return false;
-      break;
-    case PLOVER:
-      if (record->event.pressed) {
-        #ifdef AUDIO_ENABLE
-          stop_all_notes();
-          PLAY_SONG(plover_song);
-        #endif
-        layer_off(_2_RAISE);
-        layer_off(_1_LOWER);
-        layer_off(_6_KBDCFG);
-        layer_on(_PLOVER);
-        if (!eeconfig_is_enabled()) {
-            eeconfig_init();
-        }
-        keymap_config.raw = eeconfig_read_keymap();
-        keymap_config.nkro = 1;
-        eeconfig_update_keymap(keymap_config.raw);
-      }
-      return false;
-      break;
-    case EXT_PLV:
-      if (record->event.pressed) {
-        #ifdef AUDIO_ENABLE
-          PLAY_SONG(plover_gb_song);
-        #endif
-        layer_off(_PLOVER);
-      }
-      return false;
-      break;
-    case LIGHT_OFF:
-      rgblight_disable();
-      break;
-    case LIGHT_ON:
-      rgblight_enable();
-      break;
-  }
-  return true;
+    switch (keycode) {
+        case PLOVER:
+            if (record->event.pressed) {
+#ifdef AUDIO_ENABLE
+                stop_all_notes();
+                PLAY_SONG(plover_song);
+#endif
+                layer_off(_2_RAISE);
+                layer_off(_1_LOWER);
+                layer_off(_4_EXTRA);
+                layer_off(_6_KBDCFG);
+                layer_on(_PLOVER);
+                if (!eeconfig_is_enabled()) {
+                    eeconfig_init();
+                }
+                eeconfig_read_keymap(&keymap_config);
+                keymap_config.nkro = 1;
+                eeconfig_update_keymap(&keymap_config);
+            }
+            return false;
+        case EXT_PLV:
+            if (record->event.pressed) {
+#ifdef AUDIO_ENABLE
+                PLAY_SONG(plover_gb_song);
+#endif
+                layer_off(_PLOVER);
+            }
+            return false;
+        case LIGHT_OFF:
+            if (record->event.pressed) {
+                rgblight_disable();
+            }
+            return false;
+        case LIGHT_ON:
+            if (record->event.pressed) {
+                rgblight_enable();
+            }
+            return false;
+        case LED_TST:
+            if (record->event.pressed) {
+                LED_TEST_BLINK();
+            }
+            return false;
+    }
+    return true;
 }
 
-bool muse_mode = false;
-uint8_t last_muse_note = 0;
-uint16_t muse_counter = 0;
-uint8_t muse_offset = 70;
-uint16_t muse_tempo = 50;
+/* -------------------------------------------------- Encoder / DIP / Muse -- */
+bool     muse_mode      = false;
+uint8_t  last_muse_note = 0;
+uint16_t muse_counter   = 0;
+uint8_t  muse_offset    = 70;
+uint16_t muse_tempo     = 50;
 
 bool encoder_update_user(uint8_t index, bool clockwise) {
-  if (muse_mode) {
-    if (IS_LAYER_ON(_2_RAISE)) {
-      if (clockwise) {
-        muse_offset++;
-      } else {
-        muse_offset--;
-      }
+    if (muse_mode) {
+        if (IS_LAYER_ON(_2_RAISE)) {
+            if (clockwise) {
+                muse_offset++;
+            } else {
+                muse_offset--;
+            }
+        } else {
+            if (clockwise) {
+                muse_tempo += 1;
+            } else {
+                muse_tempo -= 1;
+            }
+        }
     } else {
-      if (clockwise) {
-        muse_tempo+=1;
-      } else {
-        muse_tempo-=1;
-      }
+        if (clockwise) {
+#ifdef MOUSEKEY_ENABLE
+            tap_code(MS_WHLD);
+#else
+            tap_code(KC_PGDN);
+#endif
+        } else {
+#ifdef MOUSEKEY_ENABLE
+            tap_code(MS_WHLU);
+#else
+            tap_code(KC_PGUP);
+#endif
+        }
     }
-  } else {
-    if (clockwise) {
-      #ifdef MOUSEKEY_ENABLE
-        tap_code(KC_MS_WH_DOWN);
-      #else
-        tap_code(KC_PGDN);
-      #endif
-    } else {
-      #ifdef MOUSEKEY_ENABLE
-        tap_code(KC_MS_WH_UP);
-      #else
-        tap_code(KC_PGUP);
-      #endif
-    }
-  }
-    return true;
+    // Handled here - don't let the keyboard-level handler send PgUp/PgDn or
+    // volume on top of it.
+    return false;
 }
 
 bool dip_switch_update_user(uint8_t index, bool active) {
@@ -382,12 +359,16 @@ bool dip_switch_update_user(uint8_t index, bool active) {
 #endif
             if (active) {
 #ifdef AUDIO_ENABLE
-                if (play_sound) { PLAY_SONG(plover_song); }
+                if (play_sound) {
+                    PLAY_SONG(plover_song);
+                }
 #endif
                 layer_on(_6_KBDCFG);
             } else {
 #ifdef AUDIO_ENABLE
-                if (play_sound) { PLAY_SONG(plover_gb_song); }
+                if (play_sound) {
+                    PLAY_SONG(plover_gb_song);
+                }
 #endif
                 layer_off(_6_KBDCFG);
             }
@@ -397,11 +378,8 @@ bool dip_switch_update_user(uint8_t index, bool active) {
             break;
         }
         case 1:
-            if (active) {
-                muse_mode = true;
-            } else {
-                muse_mode = false;
-            }
+            muse_mode = active;
+            break;
     }
     return true;
 }
@@ -428,11 +406,11 @@ void matrix_scan_user(void) {
 }
 
 bool music_mask_user(uint16_t keycode) {
-  switch (keycode) {
-    case LT(_3_FN, KC_APP):
-    case MO(_3_FN):
-      return false;
-    default:
-      return true;
-  }
+    switch (keycode) {
+        case FN_APP:
+        case MO(_3_FN):
+            return false;
+        default:
+            return true;
+    }
 }
