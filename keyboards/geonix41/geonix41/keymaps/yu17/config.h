@@ -34,7 +34,7 @@
 #define TRANSIENT_EEPROM_SIZE 4096
 
 /* ---- yu17 ---------------------------------------------------------------- */
-// Base, Lower, Raise, Fn, Extra, Mouse, KbdCfg
+// Base, Lower, Raise, Fn, Extra, Mouse, Settings (KbdCfg)
 #define DYNAMIC_KEYMAP_LAYER_COUNT 7
 
 // Layer Lock (Fn + Lower / Fn + Raise) has no idle timeout: a locked numpad

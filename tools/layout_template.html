@@ -257,7 +257,7 @@ const BOARDS = [
   },
   {
     id: "geonix", name: "Chosfox Geonix Rev.2.5 1U", src: "geonix", geom: GRID, compare: "planck",
-    meta: "Firmware: Chosfox vial-qmk fork (Vial: keys can also be changed live in the Vial app). LED column: per-key colour; on non-base layers keys that do something light up, free keys go dark. Everywhere: Shift + Backspace = Delete (a Vial key override, editable in the Vial app); Fn + Space returns to Base and releases a locked layer.",
+    meta: "Firmware: Chosfox vial-qmk fork (Vial: keys can also be changed live in the Vial app). LED: Base runs the RGB effect; every other layer colours each key by what it does (dimmed when it falls through, dark when unused), the Space keys show the layer colour, and Num Lock, the active connection, NKRO and the Win key show their state. Everywhere: Shift + Backspace = Delete (a Vial key override); Fn + Space returns to Base and releases a locked layer.",
     pair: { _BASE: "_0_BASE", _LOWER: "_1_LOWER", _RAISE: "_2_RAISE", _FN: "_3_FN", _EXTRA: "_4_EXTRA", _MOUSE: "_5_MOUSE", _KBDCFG: "_6_KBDCFG" },
     layers: {
       _BASE:   { name: "Base", how: "Default layer", led: "Current RGB effect", ledc: "conic-gradient(red, yellow, lime, cyan, blue, magenta, red)", held: [] },
@@ -268,7 +268,7 @@ const BOARDS = [
       _EXTRA:  { name: "Extra", how: "Hold Lower + Raise (either order)", ledc: hsv(20, 153, 255), led: "Orange", held: [LOWER, RAISE] },
       _MOUSE:  { name: "Mouse", how: "Extra → Mouse key; stays on until To Base (top-right)", ledc: hsv(0, 200, 255), led: "Red", held: [] },
       _KBDCFG: { name: "Settings", how: "Hold Lower + Raise + Fn", ledc: hsv(0, 0, 200), led: "White", held: [LOWER, RAISE, FN],
-                 note: "Wireless and lighting keys sit at the stock firmware's Fn positions, so the built-in status flashes (pairing, battery, sleep timer) line up." },
+                 note: "Wireless keys sit at the stock firmware's Fn positions (Tab, Q, W, E, R), so the built-in pairing and connection flashes line up. Lighting controls are on Extra." },
     },
   },
   {

@@ -33,12 +33,12 @@
  *
  * Behaviour:
  *  - Base layer shows the normal RGBLight effect (default: static light cyan),
- *    adjustable from the KbdCfg layer and saved to EEPROM.
+ *    adjustable from the Extra layer and saved to EEPROM.
  *  - Every other layer paints a solid colour over it (see keymap.c).
  *  - Layer colours are shown even while the base glow is switched off
- *    (LIGHT_OFF / UG_TOGG), so the indicator can never "silently die".
+ *    (UG_TOGG on Extra), so the indicator can never "silently die".
  *  - On power-up the strip blinks a rainbow test pattern 3x (also on the
- *    LED_TST key in KbdCfg) - a quick hardware check for every LED.
+ *    LED_TST key on Extra) - a quick hardware check for every LED.
  */
 #define RGBLIGHT_LAYERS
 #define RGBLIGHT_LAYER_BLINK
@@ -56,7 +56,7 @@
 #define RGBLIGHT_VAL_STEP 17
 #define RGBLIGHT_LIMIT_VAL 255
 
-// A few base-layer animations to cycle through with UG_NEXT (KbdCfg).
+// A few base-layer animations to cycle through with UG_NEXT (Extra).
 #define RGBLIGHT_EFFECT_BREATHING
 #define RGBLIGHT_EFFECT_RAINBOW_MOOD
 #define RGBLIGHT_EFFECT_RAINBOW_SWIRL
