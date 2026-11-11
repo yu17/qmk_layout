@@ -262,14 +262,50 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     return state;
 }
 
-/* ------------------------------------------------- Per-key layer colours --
- * On any layer above Base: keys that do something light up in the
- * layer's colour, unused (KC_NO) keys go dark, transparent keys keep the
- * normal effect. The vendor's own indicators (connection, battery, ...) are
- * drawn afterwards, on top of this.
+/* ------------------------------------------------------ Per-key colours --
+ * Base layer: the normal RGB effect (plus the Caps indicator).
+ * Any other layer: every key shows what it does (palette below), keys that
+ * fall through to a lower layer show that key's colour dimmed, unused keys
+ * are dark, and both Space keys show the layer's colour. A few keys show live
+ * state: Num Lock, the active connection, NKRO, Win key on/off.
+ * The vendor's own indicators (pairing, battery, ...) are drawn on top.
  */
+enum key_class {
+    C_OFF, C_TYPE, C_MOD, C_LAYER, C_NAV, C_FKEY, C_VOLUME, C_BRIGHT, C_LIGHT, C_AMBIENT,
+    C_WIRELESS, C_SYSTEM, C_FEATURE, C_MOUSE, C_NUMPAD,
+    // live state
+    C_NUM_OFF, C_CONN_ACTIVE, C_NKRO_ALL, C_NKRO_6, C_WIN_ON, C_WIN_OFF,
+    C_COUNT
+};
+
+// {hue, sat, brightness %} - QMK 0-255 hue. Low saturation reads as pastel;
+// tune here. Hues follow the layer map page (docs/layout.html).
+static const uint8_t palette[C_COUNT][3] = {
+    [C_OFF]         = {0, 0, 0},
+    [C_TYPE]        = {150, 25, 70},  // typing keys: soft cool white
+    [C_MOD]         = {150, 70, 75},  // modifiers: slate
+    [C_LAYER]       = {160, 130, 100}, // layer keys: periwinkle
+    [C_NAV]         = {120, 120, 100}, // navigation: mint/teal
+    [C_FKEY]        = {29, 110, 100},  // F-keys: sand
+    [C_VOLUME]      = {85, 120, 100},  // volume/media: green
+    [C_BRIGHT]      = {55, 140, 100},  // screen brightness: yellow-green
+    [C_LIGHT]       = {225, 110, 100}, // key lighting: pink
+    [C_AMBIENT]     = {200, 120, 100}, // ambient strip: orchid
+    [C_WIRELESS]    = {21, 130, 100},  // wireless/battery: apricot
+    [C_SYSTEM]      = {0, 130, 100},   // system/reset: rose
+    [C_FEATURE]     = {185, 110, 100}, // Caps Word: lavender
+    [C_MOUSE]       = {140, 120, 100}, // mouse: sky
+    [C_NUMPAD]      = {38, 120, 100},  // keypad (Num Lock on): butter
+    [C_NUM_OFF]     = {18, 230, 55},   // Num Lock off: brown
+    [C_CONN_ACTIVE] = {85, 255, 100},  // active connection: green
+    [C_NKRO_ALL]    = {120, 200, 100}, // all-key rollover: teal
+    [C_NKRO_6]      = {21, 220, 100},  // 6-key rollover: orange
+    [C_WIN_ON]      = {85, 220, 100},  // Win key enabled (lights GU_ON)
+    [C_WIN_OFF]     = {0, 220, 100},   // Win key disabled (lights GU_OFF)
+};
+
 static const uint8_t layer_hs[][2] = {
-    // {hue, sat}, same colours as the Planck underglow
+    // {hue, sat} of the Space-key layer indicator
     [_LOWER]  = {85, 170},  // green
     [_RAISE]  = {170, 170}, // purple
     [_FN]     = {53, 153},  // lemon
@@ -278,33 +314,122 @@ static const uint8_t layer_hs[][2] = {
     [_KBDCFG] = {0, 0},     // white
 };
 
-#define INDICATOR_MIN_VAL 64 // keep layer colours visible at low brightness
+#define INDICATOR_MIN_VAL 64 // keep indicators visible at low brightness
+#define FALLTHROUGH_PCT 45   // keys falling through to a lower layer
+
+static uint8_t classify(uint16_t kc) {
+    switch (kc) {
+        case KC_NO: return C_OFF;
+        case KC_NUM_LOCK: return host_keyboard_led_state().num_lock ? C_NUMPAD : C_NUM_OFF;
+        case MD_USB: return Keyboard_Info.Key_Mode == QMK_USB_MODE ? C_CONN_ACTIVE : C_WIRELESS;
+        case MD_24G: return Keyboard_Info.Key_Mode == QMK_2P4G_MODE ? C_CONN_ACTIVE : C_WIRELESS;
+        case MD_BLE1: case MD_BLE2: case MD_BLE3:
+            return (Keyboard_Info.Key_Mode == QMK_BLE_MODE && Keyboard_Info.Ble_Channel == kc - MD_BLE1 + QMK_BLE_CHANNEL_1) ? C_CONN_ACTIVE : C_WIRELESS;
+        case SIX_N: return keymap_config.nkro ? C_NKRO_ALL : C_NKRO_6;
+        case GU_ON: return keymap_config.no_gui ? C_OFF : C_WIN_ON;
+        case GU_OFF: return keymap_config.no_gui ? C_WIN_OFF : C_OFF;
+        case QK_BAT: case QK_DEB: case TIME_ST: case TIME_DT:
+        case QMK_KB_2P4G_PAIR: case QMK_KB_BLE1_PAIR: case QMK_KB_BLE2_PAIR:
+            return C_WIRELESS;
+        case U_EE_CLR: case QK_WLO: case KC_UC: return C_SYSTEM;
+        case RGB_RTOG: case TEST_CL: return C_LIGHT;
+        case CW_TOGG: case QK_LLCK: return C_FEATURE;
+        case TL_LOWR: case TL_UPPR: case LLCK_LOWER: case LLCK_RAISE: return C_LAYER;
+        case KC_BRIGHTNESS_UP: case KC_BRIGHTNESS_DOWN: return C_BRIGHT;
+        case KC_RIGHT: case KC_LEFT: case KC_DOWN: case KC_UP:
+        case KC_HOME: case KC_END: case KC_PAGE_UP: case KC_PAGE_DOWN:
+            return C_NAV;
+        case QK_BOOT: case QK_REBOOT: case EE_CLR: case DB_TOGG: return C_SYSTEM;
+    }
+    if (kc >= LOGO_TOG && kc <= LOGO_SPD) return C_AMBIENT;
+    if (IS_UNDERGLOW_KEYCODE(kc) || IS_RGB_MATRIX_KEYCODE(kc)) return C_LIGHT;
+    if (IS_QK_MAGIC(kc)) return C_SYSTEM;
+    if (IS_MOUSE_KEYCODE(kc)) return C_MOUSE;
+    if (IS_MODIFIER_KEYCODE(kc)) return C_MOD;
+    if (IS_QK_MOMENTARY(kc) || IS_QK_TO(kc) || IS_QK_TOGGLE_LAYER(kc) || IS_QK_LAYER_TAP(kc) || IS_QK_ONE_SHOT_LAYER(kc) ||
+        IS_QK_LAYER_TAP_TOGGLE(kc) || IS_QK_DEF_LAYER(kc) || IS_QK_LAYER_MOD(kc))
+        return C_LAYER;
+    if ((kc >= KC_KP_SLASH && kc <= KC_KP_DOT) || kc == KC_KP_EQUAL) return host_keyboard_led_state().num_lock ? C_NUMPAD : C_NUM_OFF;
+    if ((kc >= KC_F1 && kc <= KC_F12) || (kc >= KC_F13 && kc <= KC_F24)) return C_FKEY;
+    if (kc >= KC_AUDIO_MUTE && kc <= KC_MEDIA_REWIND) return C_VOLUME;
+    if (IS_QK_KB(kc)) return C_SYSTEM; // other vendor keys
+    return C_TYPE;
+}
+
+// The key a position resolves to on the active layers (following _______).
+static uint16_t resolve(uint8_t layer, keypos_t pos, bool *fell_through) {
+    layer_state_t layers = layer_state | default_layer_state;
+    *fell_through = false;
+    for (int8_t l = layer; l >= 0; l--) {
+        if (l != 0 && !(layers & ((layer_state_t)1 << l))) continue;
+        uint16_t kc = keymap_key_to_keycode(l, pos);
+        if (kc != KC_TRNS) return kc;
+        *fell_through = true;
+    }
+    return KC_NO;
+}
+
+static rgb_t   key_rgb[MATRIX_ROWS][MATRIX_COLS];
+static uint8_t key_layer = 0;
+
+typedef struct {
+    layer_state_t layers;
+    uint8_t       leds, mode, channel, val;
+    uint16_t      kcfg;
+} indicator_sig_t;
+
+static void refresh_colours(uint8_t layer, uint8_t val) {
+    for (uint8_t row = 0; row < MATRIX_ROWS; row++) {
+        for (uint8_t col = 0; col < MATRIX_COLS; col++) {
+            bool     dim;
+            uint16_t kc  = resolve(layer, (keypos_t){.row = row, .col = col}, &dim);
+            uint8_t  cls = classify(kc);
+            uint16_t v   = (uint16_t)val * palette[cls][2] / 100;
+            if (dim) v = v * FALLTHROUGH_PCT / 100;
+            // Space keys show the layer (dangerous keys keep their own colour).
+            if (row == 3 && (col == 5 || col == 6) && cls != C_SYSTEM && layer < ARRAY_SIZE(layer_hs)) {
+                key_rgb[row][col] = hsv_to_rgb((hsv_t){layer_hs[layer][0], layer_hs[layer][1], val});
+            } else {
+                key_rgb[row][col] = hsv_to_rgb((hsv_t){palette[cls][0], palette[cls][1], (uint8_t)v});
+            }
+        }
+    }
+}
 
 bool rgb_matrix_indicators_user(void) {
     uint8_t layer = get_highest_layer(layer_state);
-    if (layer >= _LOWER && layer < ARRAY_SIZE(layer_hs)) {
+    if (layer >= _LOWER) {
         uint8_t val = rgb_matrix_get_val();
         if (val < INDICATOR_MIN_VAL) val = INDICATOR_MIN_VAL;
         if (val > RGB_MATRIX_MAXIMUM_BRIGHTNESS) val = RGB_MATRIX_MAXIMUM_BRIGHTNESS;
-        hsv_t hsv = {layer_hs[layer][0], layer_hs[layer][1], val};
-        rgb_t rgb = hsv_to_rgb(hsv);
 
+        // Recompute only when something shown changes (or every 250 ms, to
+        // pick up keymap edits made in Vial).
+        static indicator_sig_t last;
+        static uint32_t        last_time;
+        indicator_sig_t        sig;
+        memset(&sig, 0, sizeof(sig)); // zero padding too: compared with memcmp
+        sig.layers  = layer_state | default_layer_state;
+        sig.leds    = host_keyboard_led_state().raw;
+        sig.mode    = Keyboard_Info.Key_Mode;
+        sig.channel = Keyboard_Info.Ble_Channel;
+        sig.val     = val;
+        sig.kcfg    = keymap_config.raw;
+        if (layer != key_layer || memcmp(&sig, &last, sizeof(sig)) != 0 || timer_elapsed32(last_time) > 250) {
+            refresh_colours(layer, val);
+            key_layer = layer;
+            last      = sig;
+            last_time = timer_read32();
+        }
         for (uint8_t row = 0; row < MATRIX_ROWS; row++) {
             for (uint8_t col = 0; col < MATRIX_COLS; col++) {
                 uint8_t led = g_led_config.matrix_co[row][col];
-                if (led == NO_LED) continue;
-                uint16_t kc = keymap_key_to_keycode(layer, (keypos_t){.row = row, .col = col});
-                if (kc == KC_TRNS) continue;
-                if (kc == KC_NO) {
-                    rgb_matrix_set_color(led, 0, 0, 0);
-                } else {
-                    rgb_matrix_set_color(led, rgb.r, rgb.g, rgb.b);
-                }
+                if (led != NO_LED) rgb_matrix_set_color(led, key_rgb[row][col].r, key_rgb[row][col].g, key_rgb[row][col].b);
             }
         }
     }
 
-    // Caps Lock / Caps Word: light the Shift key white.
+    // Caps Lock / Caps Word: light the Shift key white (all layers).
     if (host_keyboard_led_state().caps_lock || is_caps_word_on()) {
         uint8_t led = g_led_config.matrix_co[2][0];
         if (led != NO_LED) rgb_matrix_set_color(led, RGB_MATRIX_MAXIMUM_BRIGHTNESS, RGB_MATRIX_MAXIMUM_BRIGHTNESS, RGB_MATRIX_MAXIMUM_BRIGHTNESS);

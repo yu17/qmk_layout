@@ -8,9 +8,19 @@ Differences from the Planck:
 
 * No audio, music mode, DIP switches or Plover layer.
 * **Windows layout only.** The vendor Mac mode is cleared at start-up.
-* **Per-key layer colours:** on Lower/Raise/Fn/Extra/Mouse/Settings, keys that
-  do something light in the layer colour and unused keys go dark. Shift turns
-  white while Caps Lock / Caps Word is on.
+* **Per-key colour hints:** only Base runs the RGB effect. On every other
+  layer each key shows what it does (typing, modifier, layer, navigation,
+  F-key, volume, screen brightness, lighting, ambient, wireless, system,
+  mouse, keypad), keys falling through to a lower layer are dimmed, unused
+  keys are dark, and both Space keys show the layer colour (green Lower,
+  purple Raise, lemon Fn, orange Extra, red Mouse, white Settings).
+  Live state: Num Lock (brown = off), active connection (green), NKRO
+  (teal = all-key, orange = 6-key), Win key (lit GU_ON green / GU_OFF red).
+  Shift turns white while Caps Lock / Caps Word is on. The palette is one
+  table in `keymap.c` (`palette[]`).
+  * Num Lock and connection state come from the host / vendor library; over
+    Bluetooth / 2.4 GHz Num Lock may always read "off" if the wireless chip
+    does not pass the host's LED state back.
 * **Raise = numpad**, same as the Planck. Num Lock is switched on
   automatically only over USB; when wireless, use the Num Lock key on Raise.
 * **Lock a layer:** Fn + Lower / Fn + Raise; Fn + Space releases it.
