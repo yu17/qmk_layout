@@ -53,8 +53,8 @@ cd ../qmk_firmware && git pull --ff-only && git submodule update --init --recurs
 
 ## Planck bootloader
 
-Lower + Raise (Extra layer) + the key left of the bottom-right corner
-(`QK_BOOT`), or the reset button on the PCB bottom. `make flash-planck`
+Lower + Raise + Fn (Settings layer) + the key left of the bottom-right
+corner (`QK_BOOT`), or the reset button on the PCB bottom. `make flash-planck`
 waits for the DFU device.
 
 ## Geonix notes
@@ -74,7 +74,7 @@ waits for the DFU device.
 * **Vial on Linux** needs access to the raw-HID device, e.g.
   `/etc/udev/rules.d/59-vial.rules`:
   `KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{serial}=="*vial:f64c2b3c*", MODE="0660", GROUP="users", TAG+="uaccess", TAG+="udev-acl"`
-* Factory reset (KbdCfg + left Space, hold 3 s) restores this keymap's
+* Factory reset (Settings + left Space, hold 3 s) restores this keymap's
   defaults, not the stock layout.
 
 ## Rollback / history

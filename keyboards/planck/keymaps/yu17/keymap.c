@@ -35,8 +35,6 @@ enum planck_layers {
 enum planck_keycodes {
     PLOVER = SAFE_RANGE,
     EXT_PLV,
-    LIGHT_OFF, // base underglow off (layer colours keep working)
-    LIGHT_ON,  // base underglow on
     LED_TST,   // blink the rainbow LED test pattern
     LLCK_LOWER, // Fn + Lower: lock/unlock the Lower layer
     LLCK_RAISE, // Fn + Raise: lock/unlock the Raise layer
@@ -110,7 +108,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------------------------------------------------.
  * |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F7  |  F8  |  F9  |  F10 |  F11 |  F12 |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Mute | Vol- | Vol+ |      |      |      |      |      |      | ScrLk| Pause| PrScr|
+ * | Mute | Vol- | Vol+ |      |      |      |      |      |      | PrScr| ScrLk| Pause|
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | Shift| Brit-| Brit+|      |      |      |      |      |      | Insrt| Del  |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -119,28 +117,29 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_3_FN] = LAYOUT_planck_grid(
     KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,
-    KC_MUTE, KC_VOLD, KC_VOLU, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_SCRL, KC_PAUS, KC_PSCR,
+    KC_MUTE, KC_VOLD, KC_VOLU, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_PSCR, KC_SCRL, KC_PAUS,
     KC_LSFT, KC_BRID, KC_BRIU, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_INS,  KC_DEL,  XXXXXXX,
     KC_LCTL, XXXXXXX, KC_LGUI, KC_LALT, LLCK_LOWER, TO(_0_BASE), TO(_0_BASE), LLCK_RAISE, MU_TOGG, KC_RGUI, KC_MENU, KC_RCTL
 ),
 
-/* Extra  (Lower + Raise)                                                  LED: orange
+/* Extra  (Lower + Raise): F13-F24 and all lighting                      LED: orange
  * ,-----------------------------------------------------------------------------------.
  * |  F13 |  F14 |  F15 |  F16 |  F17 |  F18 |  F19 |  F20 |  F21 |  F22 |  F23 |  F24 |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Esc  |LgtOff|LgtOn |      |      |      |      |      |      |Audoff|Aud on|      |
+ * | Esc  |LgtTog| Eff+ | Hue+ | Sat+ |Brgt+ | Spd+ |      |      |      |      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Shift|RGBTOG|RGBHUI|RGBSAI|RGBVAI|      |      |NKOFF | NKON |GUIOFF|GUION | Mouse|
+ * | Shift|LEDtst| Eff- | Hue- | Sat- |Brgt- | Spd- |      |      |      |      | Mouse|
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | LCtrl|KbdCfg| LGUI | LALT |      |    Space    |      |      |      | Boot |      |
+ * | LCtrl|Settng| LGUI | LALT |      |    Space    |      |      |      |      |      |
  * `-----------------------------------------------------------------------------------'
- *   KbdCfg is a hold key: Lower + Raise + (FN/M position) -> KbdCfg layer.
+ *   LgtTog = base glow on/off (saved; layer colours keep working).
+ *   Settng is a hold key: Lower + Raise + Fn -> Settings layer.
  */
 [_4_EXTRA] = LAYOUT_planck_grid(
-    KC_F13,  KC_F14,    KC_F15,   KC_F16,  KC_F17,  KC_F18,  KC_F19,  KC_F20,  KC_F21,  KC_F22,  KC_F23,  KC_F24,
-    KC_ESC,  LIGHT_OFF, LIGHT_ON, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, AU_OFF,  AU_ON,   XXXXXXX,
-    KC_LSFT, UG_TOGG,   UG_HUEU,  UG_SATU, UG_VALU, XXXXXXX, XXXXXXX, NK_OFF,  NK_ON,   GU_OFF,  GU_ON,   TO(_5_MOUSE),
-    KC_LCTL, MO(_6_KBDCFG), KC_LGUI, KC_LALT, XXXXXXX, KC_SPC, KC_SPC, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT, XXXXXXX
+    KC_F13,  KC_F14,  KC_F15,  KC_F16,  KC_F17,  KC_F18,  KC_F19,  KC_F20,  KC_F21,  KC_F22,  KC_F23,  KC_F24,
+    KC_ESC,  UG_TOGG, UG_NEXT, UG_HUEU, UG_SATU, UG_VALU, UG_SPDU, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+    KC_LSFT, LED_TST, UG_PREV, UG_HUED, UG_SATD, UG_VALD, UG_SPDD, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, TO(_5_MOUSE),
+    KC_LCTL, MO(_6_KBDCFG), KC_LGUI, KC_LALT, XXXXXXX, KC_SPC, KC_SPC, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
 ),
 
 /* Mouse  (Extra -> Mouse; leave with ToBase)                              LED: red
@@ -161,23 +160,24 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_LCTL, FN_APP,  KC_LGUI, KC_LALT, MS_BTN4, KC_SPC,  KC_SPC,  MS_BTN5, MS_LEFT, MS_DOWN, MS_UP,   MS_RGHT
 ),
 
-/* KbdCfg  (hold Lower + Raise + FN/M, or DIP switch 0)                    LED: white
- *                      v------------------------RGB CONTROL--------------------v
+/* Settings / KbdCfg  (hold Lower + Raise + Fn, or DIP switch 0)         LED: white
+ * Keyboard configuration only - lighting lives on Extra.
  * ,-----------------------------------------------------------------------------------.
- * |      |Reboot|Debug | RGB  |RGBMOD| HUE+ | HUE- | SAT+ | SAT- |BRGTH+|BRGTH-|  Del |
+ * |      |Reboot|Debug |      |      |      |      |      |      |      |      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |      |      |MUSmod|Aud on|Audoff|AGnorm|AGswap|      |      |      |Plover|      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |Voice-|Voice+|Mus on|Musoff|RGBMD-|SPEED+|SPEED-|LEDtst|      |      |      |
+ * |      |Voice-|Voice+|Mus on|Musoff|      |      |NKOFF | NKON |WinOff| WinOn|      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |             |      |      |      |      |EEPclr|
+ * |      |      |      |      |      |             |      |      |      | Boot |EEPclr|
  * `-----------------------------------------------------------------------------------'
+ *   Boot = bootloader (for flashing). EEPclr = reset all saved settings.
  */
 [_6_KBDCFG] = LAYOUT_planck_grid(
-    XXXXXXX, QK_RBT,  DB_TOGG, UG_TOGG, UG_NEXT, UG_HUEU, UG_HUED, UG_SATU, UG_SATD, UG_VALU, UG_VALD, KC_DEL,
+    XXXXXXX, QK_RBT,  DB_TOGG, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
     XXXXXXX, XXXXXXX, MU_NEXT, AU_ON,   AU_OFF,  AG_NORM, AG_SWAP, XXXXXXX, XXXXXXX, XXXXXXX, PLOVER,  XXXXXXX,
-    XXXXXXX, AU_PREV, AU_NEXT, MU_ON,   MU_OFF,  UG_PREV, UG_SPDU, UG_SPDD, LED_TST, XXXXXXX, XXXXXXX, XXXXXXX,
-    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, EE_CLR
+    XXXXXXX, AU_PREV, AU_NEXT, MU_ON,   MU_OFF,  XXXXXXX, XXXXXXX, NK_OFF,  NK_ON,   GU_OFF,  GU_ON,   XXXXXXX,
+    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT, EE_CLR
 ),
 
 /* Plover layer (http://opensteno.org)                                     LED: magenta
@@ -302,16 +302,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 PLAY_SONG(plover_gb_song);
 #endif
                 layer_off(_PLOVER);
-            }
-            return false;
-        case LIGHT_OFF:
-            if (record->event.pressed) {
-                rgblight_disable();
-            }
-            return false;
-        case LIGHT_ON:
-            if (record->event.pressed) {
-                rgblight_enable();
             }
             return false;
         case LED_TST:

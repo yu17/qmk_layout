@@ -166,7 +166,9 @@ const LABELS = {
   PLOVER:["Plover","steno mode"], EXT_PLV:["Exit","Plover"],
   MD_USB:["USB","wired"], MD_BLE1:["BT 1","hold: pair"], MD_BLE2:["BT 2","hold: pair"], MD_BLE3:["BT 3","hold: pair"],
   MD_24G:["2.4 GHz","hold: pair"], QK_BAT:["Battery","level"], TIME_ST:["Sleep","timer"], QK_DEB:["Low latency","hold 3 s"],
-  U_EE_CLR:["Factory reset","hold 3 s"], RGB_RTOG:["Lights","on/off"], LOGO_MOD:["Ambient","effect"], TEST_CL:["LED test"],
+  U_EE_CLR:["Factory reset","hold 3 s"], RGB_RTOG:["Lights","on/off"], TEST_CL:["LED test"], SIX_N:["NKRO","6-key/all"],
+  LOGO_TOG:["Ambient","on/off"], LOGO_MOD:["Ambient","effect +"], LOGO_RMOD:["Ambient","effect −"],
+  LOGO_HUI:["Ambient","hue +"], LOGO_HUD:["Ambient","hue −"], LOGO_VAI:["Ambient","bright +"], LOGO_VAD:["Ambient","bright −"],
   MS_BTN1:["Click","left"], MS_BTN2:["Click","right"], MS_BTN3:["Click","middle"], MS_BTN4:["Back"], MS_BTN5:["Forward"],
   MS_UP:["Mouse ↑"], MS_DOWN:["Mouse ↓"], MS_LEFT:["Mouse ←"], MS_RGHT:["Mouse →"],
   MS_WHLU:["Wheel ↑"], MS_WHLD:["Wheel ↓"], MS_WHLL:["Wheel ←"], MS_WHLR:["Wheel →"],
@@ -195,7 +197,7 @@ const MODS = new Set(["KC_LSFT","KC_RSFT","KC_LCTL","KC_RCTL","KC_LGUI","KC_RGUI
 const NAV = new Set(["KC_LEFT","KC_RGHT","KC_UP","KC_DOWN","KC_HOME","KC_END","KC_PGUP","KC_PGDN"]);
 const MEDIA = new Set(["KC_MUTE","KC_VOLD","KC_VOLU","KC_BRID","KC_BRIU","KC_MPLY","KC_MSTP","KC_MPRV","KC_MNXT"]);
 const WIRELESS = new Set(["MD_USB","MD_BLE1","MD_BLE2","MD_BLE3","MD_24G","QK_BAT","TIME_ST","QK_DEB"]);
-const SYSTEM = new Set(["QK_BOOT","QK_RBT","EE_CLR","U_EE_CLR","DB_TOGG","NK_ON","NK_OFF","NK_TOGG","GU_ON","GU_OFF","AG_NORM","AG_SWAP","MD_BOOT","U_T_AUTO","U_T_AGCR"]);
+const SYSTEM = new Set(["SIX_N","QK_BOOT","QK_RBT","EE_CLR","U_EE_CLR","DB_TOGG","NK_ON","NK_OFF","NK_TOGG","GU_ON","GU_OFF","AG_NORM","AG_SWAP","MD_BOOT","U_T_AUTO","U_T_AGCR"]);
 const LIGHT = new Set(["LIGHT_OFF","LIGHT_ON","LED_TST","LOGO_MOD","TEST_CL","RGB_RTOG"]);
 
 function category(c) {
@@ -209,7 +211,7 @@ function category(c) {
   if (MEDIA.has(c)) return "media";
   if (WIRELESS.has(c)) return "wireless";
   if (SYSTEM.has(c)) return "system";
-  if (LIGHT.has(c) || /^(UG_|RGB_)/.test(c)) return "light";
+  if (LIGHT.has(c) || /^(UG_|RGB_|LOGO_)/.test(c)) return "light";
   if (c === "CW_TOGG" || c === "QK_LLCK") return "feature";
   if (/^MS_/.test(c)) return "mouse";
   if (/^(AU_|MU_|PLOVER|EXT_PLV)/.test(c)) return "audio";

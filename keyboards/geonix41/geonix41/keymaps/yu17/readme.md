@@ -8,7 +8,7 @@ Differences from the Planck:
 
 * No audio, music mode, DIP switches or Plover layer.
 * **Windows layout only.** The vendor Mac mode is cleared at start-up.
-* **Per-key layer colours:** on Lower/Raise/Fn/Extra/Mouse/KbdCfg, keys that
+* **Per-key layer colours:** on Lower/Raise/Fn/Extra/Mouse/Settings, keys that
   do something light in the layer colour and unused keys go dark. Shift turns
   white while Caps Lock / Caps Word is on.
 * **Raise = numpad**, same as the Planck. Num Lock is switched on
@@ -23,22 +23,26 @@ Differences from the Planck:
 
 ## Stock Fn functions -> this keymap
 
-"KbdCfg" = hold **Lower + Raise + Fn**.
+"Extra" = hold **Lower + Raise** (all lighting). "Settings" = hold
+**Lower + Raise + Fn** (wireless and keyboard configuration).
 
 | Stock | Function | Here |
 |---|---|---|
-| Fn + Tab / Q / W / E / R | USB / BT1 / BT2 / BT3 / 2.4 GHz (hold = pair) | KbdCfg + same keys |
-| Fn + T | Next key-light effect | KbdCfg + T (also Extra + Z); KbdCfg + B = previous |
-| Fn + Backspace | All lights on/off | KbdCfg + Backspace (also Extra + A) |
-| Fn + Up / Down | Brightness + / - | KbdCfg + Up / Down (same keys, new bottom-row order) |
-| Fn + Left / Right | Effect speed - / + | KbdCfg + Left / Right |
-| Fn + Enter | Next ambient (side/logo) light effect | KbdCfg + Enter (also KbdCfg + V, Extra + S) |
-| Fn + Left Alt | Wireless sleep timer 1/3/10/30 min (T flashes red/green/blue/white) | KbdCfg + X |
-| Fn + Ctrl | Battery level | KbdCfg + Z |
-| Fn + Del (hold 3 s) | 2.4 GHz low-latency on/off (Del flashes red/green) | KbdCfg + C (hold 3 s) |
-| Fn + left Space (hold 3 s) | Factory reset | KbdCfg + left Space (hold 3 s) |
+| Fn + Tab / Q / W / E / R | USB / BT1 / BT2 / BT3 / 2.4 GHz (hold = pair) | Settings + same keys |
+| Fn + T | Next key-light effect | Extra + S (previous: Extra + X) |
+| Fn + Backspace | All lights on/off | Extra + A |
+| Fn + Up / Down | Brightness + / - | Extra + G / B |
+| Fn + Left / Right | Effect speed - / + | Extra + N / H |
+| Fn + Enter | Next ambient (side/logo) light effect | Extra + K (previous: Extra + `,`) |
+| - | Ambient on/off, hue +/-, brightness +/- | Extra + J, L / `.`, `;` / `/` |
+| Fn + Left Alt | Wireless sleep timer 1/3/10/30 min (T flashes red/green/blue/white) | Settings + X |
+| Fn + Ctrl | Battery level | Settings + Z |
+| Fn + Del (hold 3 s) | 2.4 GHz low-latency on/off (Del flashes red/green) | Settings + C (hold 3 s) |
+| Fn + left Space (hold 3 s) | Factory reset | Settings + left Space (hold 3 s) |
+| - | 6-key / all-key rollover (NKRO) | Settings + M |
+| - | Win key off / on | Settings + `.` / `/` |
 | Fn + Y / U | Mac / Windows mode | dropped (Windows only) |
-| - | LED colour test | KbdCfg + `,` |
+| - | LED colour test | Extra + Z |
 | Fn + number row, Z..N | Digits/symbols, Ins/Del/Home/End/PgUp/PgDn | Lower / Raise, as on the Planck |
 
 The status flashes (sleep timer on T, low latency on Del) are drawn by the

@@ -20,16 +20,18 @@ A visual map of every layer: `make docs` -> `docs/layout.html`.
 ## Underglow (9 hand-soldered WS2812 LEDs)
 
 * **Power-on self test:** the strip blinks a rainbow 3x when plugged in, with
-  each LED a different colour. Also available on KbdCfg + `LED_TST` (Lower +
-  Raise + FN/M, then the `,` key).
+  each LED a different colour. Also on Extra + `Z` (`LED_TST`; Extra = hold
+  Lower + Raise).
   * Nothing lights: check 5 V/GND and the data line from pin A1.
   * The first N LEDs light and the rest stay dark: the LED after the last
     lit one (or its data in/out joint) is bad. WS2812s pass data down a chain.
 * **Layer colours** work even when the base glow is switched off.
-* Base glow: Extra + `A` = off, Extra + `S` = on (saved). Effect, colour and
-  brightness are on KbdCfg and are saved to EEPROM.
-* If the lights act strangely after flashing, reset the settings with
-  KbdCfg + bottom-right (`EE_CLR`).
+* All lighting is on **Extra**: `A` = base glow on/off, then `+` on the top
+  row and `-` below it for effect (`S`/`X`), hue (`D`/`C`), saturation
+  (`F`/`V`), brightness (`G`/`B`), speed (`H`/`N`). Saved to EEPROM.
+* **Settings** (Lower + Raise + Fn) is configuration only: reboot, debug,
+  audio/music, Alt/Win swap, NKRO, Win-key lock, Plover, bootloader and
+  `EE_CLR` (bottom-right) to reset all saved settings.
 
 Before this rework the 2023 QMK build drove the LEDs at 80 kHz instead of the
 WS2812's 800 kHz (fixed upstream in Oct 2024). Also, `LIGHT_OFF` saved "off" to

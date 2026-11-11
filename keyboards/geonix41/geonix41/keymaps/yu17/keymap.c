@@ -108,7 +108,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------------------------------------------------.
  * |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |  F7  |  F8  |  F9  |  F10 |  F11 |  F12 |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Mute | Vol- | Vol+ |      |      |      |      |      |      | ScrLk| Pause| PrScr|
+ * | Mute | Vol- | Vol+ |      |      |      |      |      |      | PrScr| ScrLk| Pause|
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | Shift| Brit-| Brit+|      |      |      |      |      |      | Insrt| Del  |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -117,28 +117,29 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_FN] = LAYOUT_tkl_ansi(
     KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,
-    KC_MUTE, KC_VOLD, KC_VOLU, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_SCRL, KC_PAUS, KC_PSCR,
+    KC_MUTE, KC_VOLD, KC_VOLU, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_PSCR, KC_SCRL, KC_PAUS,
     KC_LSFT, KC_BRID, KC_BRIU, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_INS,  KC_DEL,  XXXXXXX,
     KC_LCTL, XXXXXXX, KC_LGUI, KC_LALT, LLCK_LOWER, TO(_BASE), TO(_BASE), LLCK_RAISE, XXXXXXX, KC_RGUI, KC_MENU, KC_RCTL
 ),
 
-/* Extra  (Lower + Raise)                                                  LED: orange
+/* Extra  (Lower + Raise): F13-F24 and all lighting                      LED: orange
+ * Key lights on the left, ambient (side/logo) strip on the right.
  * ,-----------------------------------------------------------------------------------.
  * |  F13 |  F14 |  F15 |  F16 |  F17 |  F18 |  F19 |  F20 |  F21 |  F22 |  F23 |  F24 |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Esc  |LgtTog|Ambnt |      |      |      |      |      |      |      |      |      |
+ * | Esc  |LgtTog| Eff+ | Hue+ | Sat+ |Brgt+ | Spd+ |AmbTog|AmbEf+|AmbHu+|AmbBr+|      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Shift|RGBMOD|RGBHUI|RGBSAI|RGBVAI|      |      |NKOFF | NKON |GUIOFF|GUION | Mouse|
+ * | Shift|LEDtst| Eff- | Hue- | Sat- |Brgt- | Spd- |      |AmbEf-|AmbHu-|AmbBr-| Mouse|
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | LCtrl|KbdCfg| LGUI | LALT |      | Space| Space|      |      |      |      |      |
+ * | LCtrl|Settng| LGUI | LALT |      | Space| Space|      |      |      |      |      |
  * `-----------------------------------------------------------------------------------'
- *   LgtTog = all key lights on/off, Ambnt = cycle ambient (logo) light effect.
- *   KbdCfg is a hold key: Lower + Raise + (FN/M position).
+ *   LgtTog = all lights on/off (vendor RGB_RTOG). LEDtst = vendor colour test.
+ *   Settng is a hold key: Lower + Raise + Fn -> Settings layer.
  */
 [_EXTRA] = LAYOUT_tkl_ansi(
-    KC_F13,  KC_F14,   KC_F15,   KC_F16,  KC_F17,  KC_F18,  KC_F19,  KC_F20,  KC_F21,  KC_F22,  KC_F23,  KC_F24,
-    KC_ESC,  RGB_RTOG, LOGO_MOD, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-    KC_LSFT, UG_NEXT,  UG_HUEU,  UG_SATU, UG_VALU, XXXXXXX, XXXXXXX, NK_OFF,  NK_ON,   GU_OFF,  GU_ON,   TO(_MOUSE),
+    KC_F13,  KC_F14,   KC_F15,  KC_F16,  KC_F17,  KC_F18,  KC_F19,  KC_F20,   KC_F21,    KC_F22,   KC_F23,   KC_F24,
+    KC_ESC,  RGB_RTOG, UG_NEXT, UG_HUEU, UG_SATU, UG_VALU, UG_SPDU, LOGO_TOG, LOGO_MOD,  LOGO_HUI, LOGO_VAI, XXXXXXX,
+    KC_LSFT, TEST_CL,  UG_PREV, UG_HUED, UG_SATD, UG_VALD, UG_SPDD, XXXXXXX,  LOGO_RMOD, LOGO_HUD, LOGO_VAD, TO(_MOUSE),
     KC_LCTL, MO(_KBDCFG), KC_LGUI, KC_LALT, XXXXXXX, KC_SPC, KC_SPC, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
 ),
 
@@ -160,27 +161,30 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     KC_LCTL, FN_APP,  KC_LGUI, KC_LALT, MS_BTN4, KC_SPC,  KC_SPC,  MS_BTN5, MS_LEFT, MS_DOWN, MS_UP,   MS_RGHT
 ),
 
-/* KbdCfg  (hold Lower + Raise + Fn)                                     LED: white
- * Keys sit where the stock firmware has them where possible (Fn+Tab/Q/W/E/R,
- * T, Bksp, Enter, arrows, left Space), so the vendor's indicator LEDs line up.
+/* Settings / KbdCfg  (hold Lower + Raise + Fn)                           LED: white
+ * Keyboard configuration only - lighting lives on Extra. Wireless keys sit
+ * where the stock firmware has them (Fn + Tab/Q/W/E/R), so the vendor's
+ * pairing / connection indicators line up.
  * ,-----------------------------------------------------------------------------------.
- * | USB  | BT1  | BT2  | BT3  | 2.4G |RGBMOD|      |      |      |      |      |LgtTog|
+ * | USB  | BT1  | BT2  | BT3  | 2.4G |      |      |      |      |      |      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      | HUE+ | HUE- | SAT+ | SAT- |      |      |      |      |      |      |      |
+ * |      |      |      |      |      |      |      |      |      |      |      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      | Batt |Sleep |LowLat|Ambnt |RGBMD-|      |      |LEDtst|      |      |Ambnt |
+ * |      | Batt |Sleep |LowLat|      |      |      | NKRO |      |WinOff| WinOn|      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |Reset3s      |      |Spd-  |Brgt- |Brgt+ |Spd+  |
+ * |      |      |      |      |      |Reset3s      |      |      |      |      |      |
  * `-----------------------------------------------------------------------------------'
  *   BT1-3 / 2.4G: tap = connect, hold = pair (vendor behaviour).
- *   Batt: show battery level on the number row. Sleep: cycle sleep timer.
+ *   Batt: battery level. Sleep: cycle wireless sleep timer (T flashes).
  *   LowLat: hold 3 s = 2.4 GHz low-latency toggle. Reset3s: hold 3 s = factory reset.
+ *   NKRO: vendor 6-key / all-key toggle (QMK's NK_ON/NK_OFF would be undone by
+ *   the vendor library at the next power-up).
  */
 [_KBDCFG] = LAYOUT_tkl_ansi(
-    MD_USB,  MD_BLE1, MD_BLE2, MD_BLE3, MD_24G,  UG_NEXT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, RGB_RTOG,
-    XXXXXXX, UG_HUEU, UG_HUED, UG_SATU, UG_SATD, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-    XXXXXXX, QK_BAT,  TIME_ST, QK_DEB,  LOGO_MOD, UG_PREV, XXXXXXX, XXXXXXX, TEST_CL, XXXXXXX, XXXXXXX, LOGO_MOD,
-    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, U_EE_CLR, XXXXXXX, XXXXXXX, UG_SPDD, UG_VALD, UG_VALU, UG_SPDU
+    MD_USB,  MD_BLE1, MD_BLE2, MD_BLE3, MD_24G,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+    XXXXXXX, QK_BAT,  TIME_ST, QK_DEB,  XXXXXXX, XXXXXXX, XXXXXXX, SIX_N,   XXXXXXX, GU_OFF,  GU_ON,   XXXXXXX,
+    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, U_EE_CLR, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
 ),
 
 };
