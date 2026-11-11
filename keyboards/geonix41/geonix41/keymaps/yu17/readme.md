@@ -22,18 +22,20 @@ in Chosfox's closed library (`lib/rdr_lib/librdrcommon.a`).
 
 ## Stock Fn functions -> this keymap
 
-"Extra" = hold **Lower + Raise** (all lighting). "Settings" = hold
+"Extra" = hold **Lower + Raise** (all lighting; `+` on the A row, `-`
+below it; key lights: on/off, brightness, speed, effect, hue, saturation from
+A to H; ambient: on/off, brightness, effect, hue from J to `;`). "Settings" = hold
 **Lower + Raise + Fn** (wireless and keyboard configuration).
 
 | Stock | Function | Here |
 |---|---|---|
 | Fn + Tab / Q / W / E / R | USB / BT1 / BT2 / BT3 / 2.4 GHz (hold = pair) | Settings + same keys |
-| Fn + T | Next key-light effect | Extra + S (previous: Extra + X) |
+| Fn + T | Next key-light effect | Extra + F (previous: Extra + V) |
 | Fn + Backspace | All lights on/off | Extra + A |
-| Fn + Up / Down | Brightness + / - | Extra + G / B |
-| Fn + Left / Right | Effect speed - / + | Extra + N / H |
-| Fn + Enter | Next ambient (side/logo) light effect | Extra + K (previous: Extra + `,`) |
-| - | Ambient on/off, hue +/-, brightness +/- | Extra + J, L / `.`, `;` / `/` |
+| Fn + Up / Down | Brightness + / - | Extra + S / X |
+| Fn + Left / Right | Effect speed - / + | Extra + C / D |
+| Fn + Enter | Next ambient (side/logo) light effect | Extra + L (previous: Extra + `.`) |
+| - | Ambient on/off, brightness +/-, hue +/- | Extra + J, K / `,`, `;` / `/` |
 | Fn + Left Alt | Wireless sleep timer 1/3/10/30 min (T flashes red/green/blue/white) | Settings + X |
 | Fn + Ctrl | Battery level | Settings + Z |
 | Fn + Del (hold 3 s) | 2.4 GHz low-latency on/off (Del flashes red/green) | Settings + C (hold 3 s) |

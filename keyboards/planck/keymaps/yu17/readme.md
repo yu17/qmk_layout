@@ -36,8 +36,8 @@ in the top-level README; every layer is also drawn in the comments of
   purple Raise, lemon Fn, orange Extra, red Mouse, white Settings, magenta
   Plover. These show even when the base glow is switched off.
 * **Extra** has all lighting controls: `A` = base glow on/off, then `+` on the
-  top row and `-` below it for effect (`S`/`X`), hue (`D`/`C`), saturation
-  (`F`/`V`), brightness (`G`/`B`), speed (`H`/`N`). Saved to EEPROM.
+  top row and `-` below it for brightness (`S`/`X`), speed (`D`/`C`), effect
+  (`F`/`V`), hue (`G`/`B`), saturation (`H`/`N`). Saved to EEPROM.
 * Lights turn off while the computer is asleep.
 
 ### How it works

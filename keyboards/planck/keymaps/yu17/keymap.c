@@ -126,9 +126,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------------------------------------------------.
  * |  F13 |  F14 |  F15 |  F16 |  F17 |  F18 |  F19 |  F20 |  F21 |  F22 |  F23 |  F24 |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Esc  |LgtTog| Eff+ | Hue+ | Sat+ |Brgt+ | Spd+ |      |      |      |      |      |
+ * | Esc  |LgtTog|Brgt+ | Spd+ | Eff+ | Hue+ | Sat+ |      |      |      |      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Shift|LEDtst| Eff- | Hue- | Sat- |Brgt- | Spd- |      |      |      |      | Mouse|
+ * | Shift|LEDtst|Brgt- | Spd- | Eff- | Hue- | Sat- |      |      |      |      | Mouse|
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | LCtrl|Settng| LGUI | LALT |      |    Space    |      |MusTog|      |      |      |
  * `-----------------------------------------------------------------------------------'
@@ -138,8 +138,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_4_EXTRA] = LAYOUT_planck_grid(
     KC_F13,  KC_F14,  KC_F15,  KC_F16,  KC_F17,  KC_F18,  KC_F19,  KC_F20,  KC_F21,  KC_F22,  KC_F23,  KC_F24,
-    KC_ESC,  UG_TOGG, UG_NEXT, UG_HUEU, UG_SATU, UG_VALU, UG_SPDU, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-    KC_LSFT, LED_TST, UG_PREV, UG_HUED, UG_SATD, UG_VALD, UG_SPDD, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, TO(_5_MOUSE),
+    KC_ESC,  UG_TOGG, UG_VALU, UG_SPDU, UG_NEXT, UG_HUEU, UG_SATU, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+    KC_LSFT, LED_TST, UG_VALD, UG_SPDD, UG_PREV, UG_HUED, UG_SATD, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, TO(_5_MOUSE),
     KC_LCTL, MO(_6_KBDCFG), KC_LGUI, KC_LALT, XXXXXXX, KC_SPC, KC_SPC, XXXXXXX, MU_TOGG, XXXXXXX, XXXXXXX, XXXXXXX
 ),
 

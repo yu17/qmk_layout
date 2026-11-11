@@ -127,9 +127,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------------------------------------------------.
  * |  F13 |  F14 |  F15 |  F16 |  F17 |  F18 |  F19 |  F20 |  F21 |  F22 |  F23 |  F24 |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Esc  |LgtTog| Eff+ | Hue+ | Sat+ |Brgt+ | Spd+ |AmbTog|AmbEf+|AmbHu+|AmbBr+|      |
+ * | Esc  |LgtTog|Brgt+ | Spd+ | Eff+ | Hue+ | Sat+ |AmbTog|AmbBr+|AmbEf+|AmbHu+|      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Shift|LEDtst| Eff- | Hue- | Sat- |Brgt- | Spd- |      |AmbEf-|AmbHu-|AmbBr-| Mouse|
+ * | Shift|LEDtst|Brgt- | Spd- | Eff- | Hue- | Sat- |      |AmbBr-|AmbEf-|AmbHu-| Mouse|
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | LCtrl|Settng| LGUI | LALT |      | Space| Space|      |      |      |      |      |
  * `-----------------------------------------------------------------------------------'
@@ -138,8 +138,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_EXTRA] = LAYOUT_tkl_ansi(
     KC_F13,  KC_F14,   KC_F15,  KC_F16,  KC_F17,  KC_F18,  KC_F19,  KC_F20,   KC_F21,    KC_F22,   KC_F23,   KC_F24,
-    KC_ESC,  RGB_RTOG, UG_NEXT, UG_HUEU, UG_SATU, UG_VALU, UG_SPDU, LOGO_TOG, LOGO_MOD,  LOGO_HUI, LOGO_VAI, XXXXXXX,
-    KC_LSFT, TEST_CL,  UG_PREV, UG_HUED, UG_SATD, UG_VALD, UG_SPDD, XXXXXXX,  LOGO_RMOD, LOGO_HUD, LOGO_VAD, TO(_MOUSE),
+    KC_ESC,  RGB_RTOG, UG_VALU, UG_SPDU, UG_NEXT, UG_HUEU, UG_SATU, LOGO_TOG, LOGO_VAI,  LOGO_MOD, LOGO_HUI, XXXXXXX,
+    KC_LSFT, TEST_CL,  UG_VALD, UG_SPDD, UG_PREV, UG_HUED, UG_SATD, XXXXXXX,  LOGO_VAD,  LOGO_RMOD, LOGO_HUD, TO(_MOUSE),
     KC_LCTL, MO(_KBDCFG), KC_LGUI, KC_LALT, XXXXXXX, KC_SPC, KC_SPC, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
 ),
 
