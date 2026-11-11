@@ -110,7 +110,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | Mute | Vol- | Vol+ |      |      |      |      |      |      | PrScr| ScrLk| Pause|
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Shift| Brit-| Brit+|      |      |      |      |      |      | Insrt| Del  |      |
+ * | Shift| Brit-| Brit+|      |      |      |      |      |      | Insrt| Del  |RShift|
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | LCtrl|      | LGUI | LALT |LckLow|   TO_BASE   |LckRai|MusTog| RGUI | MENU |RCTRL |
  * `-----------------------------------------------------------------------------------'
@@ -118,7 +118,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_3_FN] = LAYOUT_planck_grid(
     KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,
     KC_MUTE, KC_VOLD, KC_VOLU, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_PSCR, KC_SCRL, KC_PAUS,
-    KC_LSFT, KC_BRID, KC_BRIU, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_INS,  KC_DEL,  XXXXXXX,
+    KC_LSFT, KC_BRID, KC_BRIU, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_INS,  KC_DEL,  KC_RSFT,
     KC_LCTL, XXXXXXX, KC_LGUI, KC_LALT, LLCK_LOWER, TO(_0_BASE), TO(_0_BASE), LLCK_RAISE, MU_TOGG, KC_RGUI, KC_MENU, KC_RCTL
 ),
 
