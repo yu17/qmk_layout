@@ -30,6 +30,7 @@ repo-local CLI configs in `.qmk/`, so `~/.config/qmk/qmk.ini` is ignored).
 make planck         # -> planck_rev6_drop_yu17.bin
 make flash-planck   # build + flash; put the Planck in bootloader when asked
 make geonix         # -> geonix41_geonix41_yu17.bin
+make flash-geonix   # build + copy to the Geonix bootloader drive (hold Tab while plugging in)
 make ctrl           # -> massdrop_ctrl_yu17.bin
 make all
 ```
@@ -63,11 +64,15 @@ waits for the DFU device.
   built there.
 * The firmware is a **Vial** build: after flashing, layers, combos, tap dance,
   macros etc. can be changed live in the Vial app (unlock: hold Tab + Q).
-* **Flashing:** the chip uses Essemi's own ROM bootloader, not DFU, so
-  `qmk flash` / QMK Toolbox cannot flash it. Use Chosfox's firmware updater
-  (ask Chosfox support if it isn't on their download page) with
-  `geonix41_geonix41_yu17.bin`. Keep their stock
-  `qmk_firmware_geonix41/geonix41_geonix41_vial.bin` to roll back.
+* **Flashing** (verified 2026-11-11): unplug, hold **Tab** and plug in. The
+  keyboard shows up as a 118 KB USB drive `RDMCTMZT DFU` (`03eb:2045`). Copy
+  the `.bin` onto it and it reboots into the new firmware by itself:
+  `make flash-geonix` (or `mcopy -i /dev/sdX geonix41_geonix41_yu17.bin ::GEONIX.BIN && sync`,
+  or drag the file in a file manager). To roll back, copy the stock
+  `qmk_firmware_geonix41/geonix41_geonix41_vial.bin` the same way.
+* **Vial on Linux** needs access to the raw-HID device, e.g.
+  `/etc/udev/rules.d/59-vial.rules`:
+  `KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{serial}=="*vial:f64c2b3c*", MODE="0660", GROUP="users", TAG+="uaccess", TAG+="udev-acl"`
 * Factory reset (KbdCfg + left Space, hold 3 s) restores this keymap's
   defaults, not the stock layout.
 
