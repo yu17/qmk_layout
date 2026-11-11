@@ -112,14 +112,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | Shift| Brit-| Brit+|      |      |      |      |      |      | Insrt| Del  |RShift|
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | LCtrl|      | LGUI | LALT |LckLow|   TO_BASE   |LckRai|MusTog| RGUI | MENU |RCTRL |
+ * | LCtrl|      | LGUI | LALT |LckLow|   TO_BASE   |LckRai| RALT | RGUI | MENU |RCTRL |
  * `-----------------------------------------------------------------------------------'
  */
 [_3_FN] = LAYOUT_planck_grid(
     KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,
     KC_MUTE, KC_VOLD, KC_VOLU, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_PSCR, KC_SCRL, KC_PAUS,
     KC_LSFT, KC_BRID, KC_BRIU, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_INS,  KC_DEL,  KC_RSFT,
-    KC_LCTL, XXXXXXX, KC_LGUI, KC_LALT, LLCK_LOWER, TO(_0_BASE), TO(_0_BASE), LLCK_RAISE, MU_TOGG, KC_RGUI, KC_MENU, KC_RCTL
+    KC_LCTL, XXXXXXX, KC_LGUI, KC_LALT, LLCK_LOWER, TO(_0_BASE), TO(_0_BASE), LLCK_RAISE, KC_RALT, KC_RGUI, KC_MENU, KC_RCTL
 ),
 
 /* Extra  (Lower + Raise): F13-F24 and all lighting                      LED: orange
@@ -130,16 +130,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | Shift|LEDtst| Eff- | Hue- | Sat- |Brgt- | Spd- |      |      |      |      | Mouse|
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | LCtrl|Settng| LGUI | LALT |      |    Space    |      |      |      |      |      |
+ * | LCtrl|Settng| LGUI | LALT |      |    Space    |      |MusTog|      |      |      |
  * `-----------------------------------------------------------------------------------'
  *   LgtTog = base glow on/off (saved; layer colours keep working).
+ *   MusTog = music mode (keys play notes); toggle it off here again.
  *   Settng is a hold key: Lower + Raise + Fn -> Settings layer.
  */
 [_4_EXTRA] = LAYOUT_planck_grid(
     KC_F13,  KC_F14,  KC_F15,  KC_F16,  KC_F17,  KC_F18,  KC_F19,  KC_F20,  KC_F21,  KC_F22,  KC_F23,  KC_F24,
     KC_ESC,  UG_TOGG, UG_NEXT, UG_HUEU, UG_SATU, UG_VALU, UG_SPDU, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
     KC_LSFT, LED_TST, UG_PREV, UG_HUED, UG_SATD, UG_VALD, UG_SPDD, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, TO(_5_MOUSE),
-    KC_LCTL, MO(_6_KBDCFG), KC_LGUI, KC_LALT, XXXXXXX, KC_SPC, KC_SPC, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
+    KC_LCTL, MO(_6_KBDCFG), KC_LGUI, KC_LALT, XXXXXXX, KC_SPC, KC_SPC, XXXXXXX, MU_TOGG, XXXXXXX, XXXXXXX, XXXXXXX
 ),
 
 /* Mouse  (Extra -> Mouse; leave with ToBase)                              LED: red
@@ -421,8 +422,14 @@ void matrix_scan_user(void) {
 
 bool music_mask_user(uint16_t keycode) {
     switch (keycode) {
+        // Layer keys keep working in music mode, so Extra (Lower + Raise ->
+        // MusTog) and Settings stay reachable to switch it off again.
         case FN_APP:
         case MO(_3_FN):
+        case LOWER:
+        case RAISE:
+        case MO(_4_EXTRA):
+        case MO(_6_KBDCFG):
             return false;
         default:
             return true;
