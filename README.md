@@ -8,6 +8,7 @@ The firmware trees stay untouched; this repo only holds my files.
 |---|---|---|
 | Drop Planck rev6 (`planck/rev6_drop`) | [`keyboards/planck/keymaps/yu17`](keyboards/planck/keymaps/yu17) | upstream `../qmk_firmware` |
 | Chosfox Geonix Rev.2.5 1U (`geonix41/geonix41`) | [`keyboards/geonix41/geonix41/keymaps/yu17`](keyboards/geonix41/geonix41/keymaps/yu17) | Chosfox vial-qmk fork `../qmk_firmware_geonix41` |
+| Massdrop CTRL, original ATSAM (`massdrop/ctrl`) | [`keyboards/massdrop/ctrl/keymaps/yu17`](keyboards/massdrop/ctrl/keymaps/yu17) | QMK 0.26.11 `../qmk_firmware_legacy` (upstream dropped the board) |
 
 Expected layout on disk:
 
@@ -15,6 +16,7 @@ Expected layout on disk:
 QMK/
 ├── qmk_firmware/            upstream qmk/qmk_firmware (git pull to update)
 ├── qmk_firmware_geonix41/   Chosfox fork, unzipped from qmk_firmware_Rev.2.5-1U.zip
+├── qmk_firmware_legacy/     git worktree of qmk_firmware pinned at tag 0.26.11 (CTRL)
 └── qmk_userspace/           this repo
 ```
 
@@ -28,10 +30,18 @@ repo-local CLI configs in `.qmk/`, so `~/.config/qmk/qmk.ini` is ignored).
 make planck         # -> planck_rev6_drop_yu17.bin
 make flash-planck   # build + flash; put the Planck in bootloader when asked
 make geonix         # -> geonix41_geonix41_yu17.bin
+make ctrl           # -> massdrop_ctrl_yu17.bin
 make all
 ```
 
 Firmware paths can be overridden: `make planck QMK_FIRMWARE=/path/to/qmk_firmware`.
+
+Recreating the legacy tree (only lib/printf is needed for the CTRL):
+
+```sh
+cd ../qmk_firmware && git worktree add --detach ../qmk_firmware_legacy 0.26.11
+cd ../qmk_firmware_legacy && git submodule update --init --depth 1 lib/printf
+```
 
 Updating upstream QMK:
 
@@ -61,7 +71,14 @@ waits for the DFU device.
 * Factory reset (KbdCfg + left Space, hold 3 s) restores this keymap's
   defaults, not the stock layout.
 
-## Rollback
+## Rollback / history
+
+My keymaps used to live in the `yu17/qmk_firmware` GitHub fork (2020-2023).
+That fork was reset to upstream; its old `master` is kept as a git bundle in
+`../backups/` (unbundle inside a qmk_firmware clone). `archive/` keeps the
+original CTRL keymap, the fork's `select_keyboard.sh`, and an old
+`arm_atsam/i2c_master.c` diff (stale, not needed).
+
 
 `archive/planck_rev6_drop_yu17-2023-12-11.bin` is the Planck firmware that was
 on the board before this rework (`dfu-util -a 0 -d 0483:df11 -s 0x08000000:leave -D <file>`
