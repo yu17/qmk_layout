@@ -372,6 +372,12 @@ static uint16_t resolve(uint8_t layer, keypos_t pos, bool *fell_through) {
 static rgb_t   key_rgb[MATRIX_ROWS][MATRIX_COLS];
 static uint8_t key_layer = 0;
 
+// Light-switch keys (key lights on/off, ambient on/off) on the current layer,
+// so they can be shown even while the lights are switched off.
+#define MAX_SWITCH_KEYS 4
+static keypos_t switch_keys[MAX_SWITCH_KEYS];
+static uint8_t  n_switch_keys = 0;
+
 typedef struct {
     layer_state_t layers;
     uint8_t       leds, mode, channel, val;
@@ -379,11 +385,15 @@ typedef struct {
 } indicator_sig_t;
 
 static void refresh_colours(uint8_t layer, uint8_t val) {
+    n_switch_keys = 0;
     for (uint8_t row = 0; row < MATRIX_ROWS; row++) {
         for (uint8_t col = 0; col < MATRIX_COLS; col++) {
             bool     dim;
             uint16_t kc  = resolve(layer, (keypos_t){.row = row, .col = col}, &dim);
             uint8_t  cls = classify(kc);
+            if ((kc == RGB_RTOG || kc == LOGO_TOG) && n_switch_keys < MAX_SWITCH_KEYS) {
+                switch_keys[n_switch_keys++] = (keypos_t){.row = row, .col = col};
+            }
             uint16_t v   = (uint16_t)val * palette[cls][2] / 100;
             if (dim) v = v * FALLTHROUGH_PCT / 100;
             // Space keys show the layer (dangerous keys keep their own colour).
@@ -433,6 +443,27 @@ bool rgb_matrix_indicators_user(void) {
     if (host_keyboard_led_state().caps_lock || is_caps_word_on()) {
         uint8_t led = g_led_config.matrix_co[2][0];
         if (led != NO_LED) rgb_matrix_set_color(led, RGB_MATRIX_MAXIMUM_BRIGHTNESS, RGB_MATRIX_MAXIMUM_BRIGHTNESS, RGB_MATRIX_MAXIMUM_BRIGHTNESS);
+    }
+    return false;
+}
+
+/* --------------------------------------------- Light switches while off --
+ * With the lights switched off (RGB_RTOG), the vendor code paints every LED
+ * black after our indicators and sets Led_Point_Sleep, which makes the LED
+ * driver cut LED power for the frame. While Extra is held, draw just the two
+ * light-switch keys after the vendor code and keep LED power on for this
+ * frame. The vendor code recomputes Led_Point_Sleep every frame, so this is
+ * temporary by construction and nothing is saved.
+ */
+bool rgb_matrix_indicators_advanced_kb(uint8_t led_min, uint8_t led_max) {
+    rgb_matrix_indicators_advanced_user(led_min, led_max); // vendor: status LEDs, blanking when off
+    if (Keyboard_Info.Led_On_Off == INIT_LED_OFF && get_highest_layer(layer_state) == _EXTRA && key_layer == _EXTRA) {
+        for (uint8_t i = 0; i < n_switch_keys; i++) {
+            uint8_t led = g_led_config.matrix_co[switch_keys[i].row][switch_keys[i].col];
+            rgb_t   c   = key_rgb[switch_keys[i].row][switch_keys[i].col];
+            if (led != NO_LED) rgb_matrix_set_color(led, c.r, c.g, c.b);
+        }
+        Led_Point_Sleep = false;
     }
     return false;
 }

@@ -18,6 +18,8 @@ Differences from the Planck:
   (teal = all-key, orange = 6-key), Win key (lit GU_ON green / GU_OFF red).
   Shift turns white while Caps Lock / Caps Word is on. The palette is one
   table in `keymap.c` (`palette[]`).
+  * With the lights switched off, holding Extra still lights the two
+    light-switch keys (A = key lights, J = ambient) so you can find them.
   * Num Lock and connection state come from the host / vendor library; over
     Bluetooth / 2.4 GHz Num Lock may always read "off" if the wireless chip
     does not pass the host's LED state back.
