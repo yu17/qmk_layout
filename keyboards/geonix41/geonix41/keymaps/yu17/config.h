@@ -34,20 +34,14 @@
 #define TRANSIENT_EEPROM_SIZE 4096
 
 /* ---- yu17 ---------------------------------------------------------------- */
-// Base, Mac, Fn, Mouse, Lower, Raise, Extra, KbdCfg
-#define DYNAMIC_KEYMAP_LAYER_COUNT 8
+// Base, Lower, Raise, Fn, Extra, Mouse, KbdCfg
+#define DYNAMIC_KEYMAP_LAYER_COUNT 7
 
 // Layer Lock (QK_LLCK): unlock automatically after 60 s without key presses.
 #define LAYER_LOCK_IDLE_TIMEOUT 60000
 
 // Tri-layer: Lower + Raise -> Extra
-#define TRI_LAYER_LOWER_LAYER 2
-#define TRI_LAYER_UPPER_LAYER 3
-#define TRI_LAYER_ADJUST_LAYER 5
+#define TRI_LAYER_LOWER_LAYER 1
+#define TRI_LAYER_UPPER_LAYER 2
+#define TRI_LAYER_ADJUST_LAYER 4
 
-// EEPROM budget (1152 B emulated): 8 layers x 48 keys x 2 B = 768 B, so trim
-// Vial's runtime-configurable pools from their defaults (8 each) to fit.
-#define VIAL_TAP_DANCE_ENTRIES 4
-#define VIAL_COMBO_ENTRIES 4
-#define VIAL_KEY_OVERRIDE_ENTRIES 4
-#define VIAL_ALT_REPEAT_KEY_ENTRIES 4
