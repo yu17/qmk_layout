@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>yu17 Keyboard Layers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Familjen+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Layout idea: a printed keymap sheet - each layer is a keycap plate on a
+     quiet slate page; keycap tint = what the key does, outline = what you hold. */
+  --bg: #eef0f3;
+  --surface: #fbfcfd;
+  --ink: #1d232b;
+  --muted: #5d6773;
+  --line: #d3d8df;
+  --accent: #3b5bdb;
+  --cap: #ffffff;
+  --cap-edge: #c5ccd5;
+  --held: #e8590c;
+  --diff: #d6336c;
+  --c-key: #ffffff;
+  --c-mod: #dfe4ea;
+  --c-layer: #dbe4ff;
+  --c-nav: #d3f0ea;
+  --c-fn: #f3ead7;
+  --c-media: #ddf2d6;
+  --c-light: #f7dcf0;
+  --c-wireless: #ffe8cc;
+  --c-system: #ffd8d8;
+  --c-feature: #e5dbff;
+  --c-mouse: #d0ebff;
+  --c-audio: #ede1f7;
+  --font-display: "Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --u: 52px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #14181d; --surface: #1b2027; --ink: #e6eaef; --muted: #98a2ae; --line: #2c333c;
+    --accent: #8ea6ff; --cap: #232931; --cap-edge: #39414c; --held: #ff922b; --diff: #f06595;
+    --c-key: #232931; --c-mod: #2c333d; --c-layer: #263257; --c-nav: #1d3b37; --c-fn: #3a3324;
+    --c-media: #24391f; --c-light: #432a3d; --c-wireless: #45351f; --c-system: #4a2629;
+    --c-feature: #322a52; --c-mouse: #1f3449; --c-audio: #382b47;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #14181d; --surface: #1b2027; --ink: #e6eaef; --muted: #98a2ae; --line: #2c333c;
+  --accent: #8ea6ff; --cap: #232931; --cap-edge: #39414c; --held: #ff922b; --diff: #f06595;
+  --c-key: #232931; --c-mod: #2c333d; --c-layer: #263257; --c-nav: #1d3b37; --c-fn: #3a3324;
+  --c-media: #24391f; --c-light: #432a3d; --c-wireless: #45351f; --c-system: #4a2629;
+  --c-feature: #322a52; --c-mouse: #1f3449; --c-audio: #382b47;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--font-body); }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1060px; margin: 0 auto; padding: 28px 20px 64px; display: grid; gap: 28px; }
+header h1 { font: 700 30px/1.15 var(--font-display); margin: 0 0 6px; text-wrap: balance; }
+header p { margin: 0; color: var(--muted); max-width: 68ch; }
+nav.jump { display: flex; flex-wrap: wrap; gap: 8px; position: sticky; top: 0; z-index: 2; padding: 10px 0; background: var(--bg); }
+nav.jump a { text-decoration: none; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); font-weight: 500; font-size: 14px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 14px; height: 14px; border-radius: 4px; border: 1px solid var(--cap-edge); display: inline-block; flex: none; }
+.sw.held { background: transparent; border: 2px solid var(--held); }
+.sw.free { background: transparent; border: 1px dashed var(--cap-edge); }
+.sw.diff { border: none; background: var(--diff); border-radius: 50%; width: 9px; height: 9px; }
+section.kb { display: grid; gap: 18px; scroll-margin-top: 56px; }
+section.kb > h2 { font: 700 24px/1.2 var(--font-display); margin: 8px 0 0; }
+.kbmeta { color: var(--muted); margin: -10px 0 0; max-width: 72ch; }
+.layers-index { display: flex; flex-wrap: wrap; gap: 6px; }
+.layers-index a { display: inline-flex; align-items: center; gap: 7px; text-decoration: none; color: var(--ink); font-size: 13px; padding: 4px 10px 4px 6px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
+.dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--cap-edge); flex: none; }
+.layer { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 16px 14px; display: grid; gap: 12px; scroll-margin-top: 56px; }
+.layer-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; }
+.layer-head h3 { margin: 0; font: 600 18px/1.2 var(--font-display); display: inline-flex; align-items: center; gap: 8px; }
+.layer-head .num { font: 500 12px var(--font-mono); color: var(--muted); }
+.layer-head .how { color: var(--ink); font-size: 14px; }
+.layer-head .stats { margin-left: auto; color: var(--muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+.note { color: var(--muted); font-size: 13px; margin: 0; max-width: 80ch; }
+.plate-scroll { overflow-x: auto; padding-bottom: 2px; }
+.plate { position: relative; }
+.key { position: absolute; padding: 3px; }
+.cap { height: 100%; border-radius: 6px; border: 1px solid var(--cap-edge); background: var(--c-key); box-shadow: inset 0 -2px 0 rgba(0,0,0,.07); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2px 3px; position: relative; overflow: hidden; }
+.cap .t { font: 500 12.5px/1.15 var(--font-mono); overflow-wrap: anywhere; }
+.cap .s { font: 400 9.5px/1.15 var(--font-body); color: var(--muted); margin-top: 2px; }
+.cap.long .t { font-size: 10.5px; font-family: var(--font-body); font-weight: 600; }
+.cap.trns { background: transparent; border-style: dotted; }
+.cap.trns .t { color: var(--muted); font-size: 11px; }
+.cap.none { background: transparent; border-style: dashed; box-shadow: none; opacity: .65; }
+.cap.held { outline: 2.5px solid var(--held); outline-offset: -1px; }
+.cap .df { position: absolute; top: 4px; right: 4px; width: 7px; height: 7px; border-radius: 50%; background: var(--diff); }
+.k-mod { background: var(--c-mod); } .k-layer { background: var(--c-layer); } .k-nav { background: var(--c-nav); }
+.k-fn { background: var(--c-fn); } .k-media { background: var(--c-media); } .k-light { background: var(--c-light); }
+.k-wireless { background: var(--c-wireless); } .k-system { background: var(--c-system); } .k-feature { background: var(--c-feature); }
+.k-mouse { background: var(--c-mouse); } .k-audio { background: var(--c-audio); }
+footer { color: var(--muted); font-size: 13px; }
+@media (max-width: 640px) { :root { --u: 46px; } header h1 { font-size: 25px; } .layer-head .stats { margin-left: 0; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>yu17 keyboard layers</h1>
+    <p>Every layer of the current keymaps, drawn from the <code>keymap.c</code> files in <code>qmk_userspace</code> (generated <span id="gen"></span>). Use it to decide what to move or fill. Dashed keys are free slots.</p>
+  </header>
+  <nav class="jump" aria-label="Keyboards">
+    <a href="#planck">Planck</a><a href="#geonix">Geonix</a><a href="#ctrl">Drop CTRL</a>
+  </nav>
+  <div class="legend" aria-label="Legend">
+    <span><i class="sw" style="background:var(--c-key)"></i>Typing</span>
+    <span><i class="sw" style="background:var(--c-mod)"></i>Modifier</span>
+    <span><i class="sw" style="background:var(--c-layer)"></i>Layer key</span>
+    <span><i class="sw" style="background:var(--c-nav)"></i>Navigation</span>
+    <span><i class="sw" style="background:var(--c-fn)"></i>F-key</span>
+    <span><i class="sw" style="background:var(--c-media)"></i>Media</span>
+    <span><i class="sw" style="background:var(--c-light)"></i>Lighting</span>
+    <span><i class="sw" style="background:var(--c-wireless)"></i>Wireless / battery</span>
+    <span><i class="sw" style="background:var(--c-system)"></i>System / reset</span>
+    <span><i class="sw" style="background:var(--c-feature)"></i>Caps Word / Layer Lock</span>
+    <span><i class="sw" style="background:var(--c-mouse)"></i>Mouse</span>
+    <span><i class="sw" style="background:var(--c-audio)"></i>Audio / steno</span>
+    <span><i class="sw held"></i>Held to get here</span>
+    <span><i class="sw free"></i>Free (does nothing)</span>
+    <span><i class="sw" style="border-style:dotted;background:transparent"></i>▽ Falls through</span>
+    <span><i class="sw diff"></i>Differs from Planck</span>
+  </div>
+  <main id="boards"></main>
+  <footer>Regenerate with <code>make docs</code> in <code>qmk_userspace</code> after changing a keymap.</footer>
+</div>
+<script>
+const DATA = /*DATA*/null;
+
+const LABELS = {
+  KC_TAB:"Tab", KC_BSPC:"Bksp", KC_ESC:"Esc", KC_LSFT:"Shift", KC_RSFT:"Shift", KC_ENT:"Enter",
+  KC_LCTL:"Ctrl", KC_RCTL:"Ctrl", KC_LGUI:"Win", KC_RGUI:"Win", KC_LALT:"Alt", KC_RALT:"Alt",
+  KC_SPC:"Space", KC_LEFT:"←", KC_RGHT:"→", KC_UP:"↑", KC_DOWN:"↓", KC_HOME:"Home", KC_END:"End",
+  KC_PGUP:"PgUp", KC_PGDN:"PgDn", KC_DEL:"Del", KC_INS:"Ins", KC_GRV:"`", KC_TILD:"~", KC_MINS:"-",
+  KC_EQL:"=", KC_UNDS:"_", KC_PLUS:"+", KC_LBRC:"[", KC_RBRC:"]", KC_LCBR:"{", KC_RCBR:"}",
+  KC_BSLS:"\\", KC_PIPE:"|", KC_SCLN:";", KC_QUOT:"'", KC_COMM:",", KC_DOT:".", KC_SLSH:"/",
+  KC_EXLM:"!", KC_AT:"@", KC_HASH:"#", KC_DLR:"$", KC_PERC:"%", KC_CIRC:"^", KC_AMPR:"&",
+  KC_ASTR:"*", KC_LPRN:"(", KC_RPRN:")", KC_CAPS:"Caps", KC_APP:"Menu", KC_MENU:"Menu",
+  KC_SCRL:"ScrLk", KC_PAUS:"Pause", KC_PSCR:"PrtSc", KC_MUTE:"Mute", KC_VOLD:"Vol −", KC_VOLU:"Vol +",
+  KC_BRID:"Bri −", KC_BRIU:"Bri +", KC_MPLY:"Play", KC_MSTP:"Stop", KC_MPRV:"Prev", KC_MNXT:"Next",
+  CW_TOGG:["Caps Word"], QK_LLCK:["Layer lock"],
+  NK_ON:["NKRO on"], NK_OFF:["NKRO off"], NK_TOGG:["NKRO","toggle"],
+  GU_ON:["Win key on"], GU_OFF:["Win key off"], AG_NORM:["Alt/Win","normal"], AG_SWAP:["Alt/Win","swapped"],
+  AU_ON:["Audio on"], AU_OFF:["Audio off"], AU_NEXT:["Voice +"], AU_PREV:["Voice −"],
+  MU_ON:["Music on"], MU_OFF:["Music off"], MU_TOGG:["Music mode"], MU_NEXT:["Music","next scale"],
+  DB_TOGG:["Debug"], QK_BOOT:["Boot-loader","for flashing"], QK_RBT:["Reboot"], EE_CLR:["Reset","settings"],
+  UG_TOGG:["Light","on/off"], UG_NEXT:["Effect +"], UG_PREV:["Effect −"], UG_HUEU:["Hue +"], UG_HUED:["Hue −"],
+  UG_SATU:["Sat +"], UG_SATD:["Sat −"], UG_VALU:["Bright +"], UG_VALD:["Bright −"], UG_SPDU:["Speed +"], UG_SPDD:["Speed −"],
+  RGB_TOG:["Light","keys/glow/off"], RGB_MOD:["Effect +"], RGB_RMOD:["Effect −"], RGB_HUI:["Hue +"], RGB_HUD:["Hue −"],
+  RGB_SAI:["Sat +"], RGB_SAD:["Sat −"], RGB_VAI:["Bright +"], RGB_VAD:["Bright −"], RGB_SPI:["Speed +"], RGB_SPD:["Speed −"],
+  LIGHT_OFF:["Glow off"], LIGHT_ON:["Glow on"], LED_TST:["LED test","rainbow"],
+  PLOVER:["Plover","steno mode"], EXT_PLV:["Exit","Plover"],
+  MD_USB:["USB","wired"], MD_BLE1:["BT 1","hold: pair"], MD_BLE2:["BT 2","hold: pair"], MD_BLE3:["BT 3","hold: pair"],
+  MD_24G:["2.4 GHz","hold: pair"], QK_BAT:["Battery","level"], TIME_ST:["Sleep","timer"], QK_DEB:["Low latency","hold 3 s"],
+  U_EE_CLR:["Factory reset","hold 3 s"], RGB_RTOG:["Lights","on/off"], LOGO_MOD:["Ambient","effect"], TEST_CL:["LED test"],
+  MS_BTN1:["Click","left"], MS_BTN2:["Click","right"], MS_BTN3:["Click","middle"], MS_BTN4:["Back"], MS_BTN5:["Forward"],
+  MS_UP:["Mouse ↑"], MS_DOWN:["Mouse ↓"], MS_LEFT:["Mouse ←"], MS_RGHT:["Mouse →"],
+  MS_WHLU:["Wheel ↑"], MS_WHLD:["Wheel ↓"], MS_WHLL:["Wheel ←"], MS_WHLR:["Wheel →"],
+  MS_ACL0:["Speed","slow"], MS_ACL1:["Speed","mid"], MS_ACL2:["Speed","fast"],
+  MD_BOOT:["Boot-loader","hold 0.5 s"], U_T_AUTO:["USB port","+Ctrl+Shift"], U_T_AGCR:["USB GCR","+Ctrl+Shift"],
+};
+const LAYER_KEYS = [
+  [/^LT\(_?3?_?FN,KC_APP\)$/, ["Fn","tap: Menu"]],
+  [/^(MO\(_1_LOWER\)|TL_LOWR)$/, ["Lower"]],
+  [/^(MO\(_2_RAISE\)|TL_UPPR)$/, ["Raise"]],
+  [/^MO\(_4_EXTRA\)$/, ["Extra"]],
+  [/^MO\(_6?_?KBDCFG\)$/, ["Settings","hold"]],
+  [/^TO\(_0?_?BASE\)$/, ["To Base"]],
+  [/^TO\(_5?_?MOUSE\)$/, ["Mouse","stays on"]],
+  [/^TG\(_1?_?LOWER\)$/, ["Lock","Lower"]],
+  [/^TG\(_2?_?RAISE\)$/, ["Lock","Raise"]],
+  [/^MO\(1\)$/, ["Fn"]],
+];
+const MODS = new Set(["KC_LSFT","KC_RSFT","KC_LCTL","KC_RCTL","KC_LGUI","KC_RGUI","KC_LALT","KC_RALT"]);
+const NAV = new Set(["KC_LEFT","KC_RGHT","KC_UP","KC_DOWN","KC_HOME","KC_END","KC_PGUP","KC_PGDN"]);
+const MEDIA = new Set(["KC_MUTE","KC_VOLD","KC_VOLU","KC_BRID","KC_BRIU","KC_MPLY","KC_MSTP","KC_MPRV","KC_MNXT"]);
+const WIRELESS = new Set(["MD_USB","MD_BLE1","MD_BLE2","MD_BLE3","MD_24G","QK_BAT","TIME_ST","QK_DEB"]);
+const SYSTEM = new Set(["QK_BOOT","QK_RBT","EE_CLR","U_EE_CLR","DB_TOGG","NK_ON","NK_OFF","NK_TOGG","GU_ON","GU_OFF","AG_NORM","AG_SWAP","MD_BOOT","U_T_AUTO","U_T_AGCR"]);
+const LIGHT = new Set(["LIGHT_OFF","LIGHT_ON","LED_TST","LOGO_MOD","TEST_CL","RGB_RTOG"]);
+
+function category(c) {
+  if (c === "_______") return "trns";
+  if (c === "XXXXXXX") return "none";
+  if (/^(MO|TO|TG|LT|TL_)/.test(c)) return "layer";
+  if (MODS.has(c)) return "mod";
+  if (NAV.has(c)) return "nav";
+  if (/^KC_F\d+$/.test(c)) return "fn";
+  if (MEDIA.has(c)) return "media";
+  if (WIRELESS.has(c)) return "wireless";
+  if (SYSTEM.has(c)) return "system";
+  if (LIGHT.has(c) || /^(UG_|RGB_)/.test(c)) return "light";
+  if (c === "CW_TOGG" || c === "QK_LLCK") return "feature";
+  if (/^MS_/.test(c)) return "mouse";
+  if (/^(AU_|MU_|PLOVER|EXT_PLV)/.test(c)) return "audio";
+  return "key";
+}
+function label(c) {
+  if (c === "_______") return ["▽"];
+  if (c === "XXXXXXX") return [""];
+  for (const [re, l] of LAYER_KEYS) if (re.test(c)) return l;
+  const v = LABELS[c];
+  if (Array.isArray(v)) return v;
+  if (v) return [v];
+  const m = c.match(/^KC_([A-Z0-9]+)$/);
+  return [m ? m[1] : c];
+}
+// Same function on both boards even if implemented differently.
+function canon(c) {
+  if (/^(MO\(_1_LOWER\)|TL_LOWR)$/.test(c)) return "LOWER";
+  if (/^(MO\(_2_RAISE\)|TL_UPPR)$/.test(c)) return "RAISE";
+  if (/^MO\(_4_EXTRA\)$/.test(c)) return "EXTRA";
+  for (const [re, l] of LAYER_KEYS) if (re.test(c)) return l.join("/");
+  return c;
+}
+const hsv = (h, s, v) => `hsl(${Math.round(h / 255 * 360)} ${Math.round(s / 255 * 100)}% ${Math.round(Math.max(30, 100 - s / 255 * 50))}%)`;
+
+const GRID = Array.from({ length: 48 }, (_, i) => ({ x: i % 12, y: Math.floor(i / 12), w: 1 }));
+const LOWER = 40, RAISE = 43, FN = 37;
+const BOARDS = [
+  {
+    id: "planck", name: "Drop Planck rev6", src: "planck", geom: GRID,
+    meta: "Firmware: upstream QMK, target planck/rev6_drop. LED column: underglow colour shown for that layer (9 LEDs under the board).",
+    layers: {
+      _0_BASE:   { name: "Base", how: "Default layer", led: "Base glow (static light cyan by default)", ledc: hsv(116, 64, 255), held: [] },
+      _1_LOWER:  { name: "Lower", how: "Hold Lower", ledc: hsv(85, 170, 255), led: "Green", held: [LOWER] },
+      _2_RAISE:  { name: "Raise", how: "Hold Raise", ledc: hsv(170, 170, 255), led: "Purple", held: [RAISE] },
+      _3_FN:     { name: "Fn", how: "Hold Fn (tap = Menu key)", ledc: hsv(53, 153, 255), led: "Lemon", held: [FN] },
+      _4_EXTRA:  { name: "Extra", how: "Hold Lower + Raise (either order)", ledc: hsv(20, 153, 255), led: "Orange", held: [LOWER, RAISE] },
+      _5_MOUSE:  { name: "Mouse", how: "Extra → Mouse key; stays on until To Base (top-right)", ledc: hsv(0, 200, 255), led: "Red", held: [] },
+      _6_KBDCFG: { name: "Settings", how: "Hold Lower + Raise + Fn (or DIP switch 0)", ledc: hsv(0, 0, 200), led: "White", held: [LOWER, RAISE, FN] },
+      _PLOVER:   { name: "Plover", how: "Settings → Plover; Exit bottom-left. Keys feed the Plover steno app.", ledc: hsv(213, 200, 255), led: "Magenta", held: [] },
+    },
+  },
+  {
+    id: "geonix", name: "Chosfox Geonix Rev.2.5 1U", src: "geonix", geom: GRID, compare: "planck",
+    meta: "Firmware: Chosfox vial-qmk fork (Vial: keys can also be changed live in the Vial app). LED column: per-key colour; on non-base layers keys that do something light up, free keys go dark.",
+    pair: { _BASE: "_0_BASE", _LOWER: "_1_LOWER", _RAISE: "_2_RAISE", _FN: "_3_FN", _EXTRA: "_4_EXTRA", _MOUSE: "_5_MOUSE", _KBDCFG: "_6_KBDCFG" },
+    layers: {
+      _BASE:   { name: "Base", how: "Default layer", led: "Current RGB effect", ledc: "conic-gradient(red, yellow, lime, cyan, blue, magenta, red)", held: [] },
+      _LOWER:  { name: "Lower", how: "Hold Lower", ledc: hsv(85, 170, 255), led: "Green", held: [LOWER] },
+      _RAISE:  { name: "Raise", how: "Hold Raise", ledc: hsv(170, 170, 255), led: "Purple", held: [RAISE] },
+      _FN:     { name: "Fn", how: "Hold Fn (tap = Menu key)", ledc: hsv(53, 153, 255), led: "Lemon", held: [FN] },
+      _EXTRA:  { name: "Extra", how: "Hold Lower + Raise (either order)", ledc: hsv(20, 153, 255), led: "Orange", held: [LOWER, RAISE] },
+      _MOUSE:  { name: "Mouse", how: "Extra → Mouse key; stays on until To Base (top-right)", ledc: hsv(0, 200, 255), led: "Red", held: [] },
+      _KBDCFG: { name: "Settings", how: "Hold Lower + Raise + Fn", ledc: hsv(0, 0, 200), led: "White", held: [LOWER, RAISE, FN],
+                 note: "Wireless and lighting keys sit at the stock firmware's Fn positions, so the built-in status flashes (pairing, battery, sleep timer) line up." },
+    },
+  },
+  {
+    id: "ctrl", name: "Drop CTRL (original)", src: "ctrl", geomKey: "ctrl_geom",
+    meta: "Firmware: QMK 0.26.11 (last release supporting this board). Same as Drop's stock layout.",
+    layers: {
+      "0": { name: "Base", how: "Default layer", led: "Current RGB effect", ledc: "conic-gradient(red, yellow, lime, cyan, blue, magenta, red)", held: [] },
+      "1": { name: "Fn", how: "Hold Fn (right of right Alt)", ledc: "var(--c-layer)", led: "Unchanged", held: "MO(1)" },
+    },
+  },
+];
+
+function el(tag, attrs = {}, ...kids) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") e.className = v; else if (k === "style") e.style.cssText = v; else e.setAttribute(k, v);
+  }
+  for (const k of kids) if (k != null) e.append(k);
+  return e;
+}
+
+function renderBoard(b) {
+  const sec = el("section", { class: "kb", id: b.id });
+  sec.append(el("h2", {}, b.name), el("p", { class: "kbmeta" }, b.meta));
+  const layers = DATA[b.src];
+  const geom = b.geomKey ? DATA[b.geomKey] : b.geom;
+  const idx = el("div", { class: "layers-index" });
+  sec.append(idx);
+  const maxX = Math.max(...geom.map(g => g.x + g.w)), maxY = Math.max(...geom.map(g => g.y)) + 1;
+  layers.forEach((L, n) => {
+    const info = b.layers[L.id] || { name: L.id, how: "", held: [] };
+    const lid = `${b.id}-${info.name.toLowerCase()}`;
+    idx.append(el("a", { href: `#${lid}` }, el("span", { class: "dot", style: `background:${info.ledc}` }), info.name));
+    const held = Array.isArray(info.held) ? info.held : L.keys.map((c, i) => c === info.held ? i : -1).filter(i => i >= 0);
+    const ref = b.compare && b.pair ? (DATA[b.compare].find(x => x.id === b.pair[L.id]) || null) : null;
+    const free = L.keys.filter(c => c === "XXXXXXX").length;
+    let diffs = 0;
+    const plate = el("div", { class: "plate", style: `width:calc(var(--u) * ${maxX});height:calc(var(--u) * ${maxY})` });
+    L.keys.forEach((c, i) => {
+      const g = geom[i];
+      let [t, s] = label(c);
+      // Tri-layer keys on Lower/Raise complete Lower+Raise, i.e. they open Extra.
+      if (n > 0 && /^TL_/.test(c)) { t = "Extra"; s = undefined; }
+      // A held key keeps doing its base-layer job; name it instead of leaving a blank.
+      if (held.includes(i) && (c === "XXXXXXX" || c === "_______")) { t = label(layers[0].keys[i])[0]; s = "held"; }
+      const cat = category(c);
+      const isHeld = held.includes(i);
+      const shownCat = isHeld && (cat === "none" || cat === "trns") ? "layer" : cat;
+      const cls = ["cap", shownCat === "trns" ? "trns" : shownCat === "none" ? "none" : `k-${shownCat}`];
+      if (isHeld) cls.push("held");
+      if (t.length > 6) cls.push("long");
+      const cap = el("div", { class: cls.join(" "), title: c }, el("span", { class: "t" }, t), s ? el("span", { class: "s" }, s) : null);
+      const mine = n > 0 && /^TL_/.test(c) ? "EXTRA" : canon(c);
+      if (ref && !isHeld && canon(ref.keys[i]) !== mine) { cap.append(el("i", { class: "df", "aria-label": `Planck: ${ref.keys[i]}` })); cap.title = `${c}  (Planck: ${ref.keys[i]})`; diffs++; }
+      plate.append(el("div", { class: "key", style: `left:calc(var(--u) * ${g.x});top:calc(var(--u) * ${g.y});width:calc(var(--u) * ${g.w});height:var(--u)` }, cap));
+    });
+    const stats = [`${free} free`];
+    if (ref) stats.push(`${diffs} differ from Planck`);
+    const card = el("article", { class: "layer", id: lid },
+      el("div", { class: "layer-head" },
+        el("h3", {}, el("span", { class: "dot", style: `background:${info.ledc}` }), info.name, el("span", { class: "num" }, `layer ${n}`)),
+        el("span", { class: "how" }, info.how),
+        el("span", { class: "stats" }, `LED: ${info.led} · ${stats.join(" · ")}`)),
+      el("div", { class: "plate-scroll" }, plate),
+      info.note ? el("p", { class: "note" }, info.note) : null);
+    sec.append(card);
+  });
+  return sec;
+}
+document.getElementById("gen").textContent = DATA.generated;
+const root = document.getElementById("boards");
+root.style.cssText = "display:grid;gap:40px";
+BOARDS.forEach(b => root.append(renderBoard(b)));
+// Layers are drawn after load, so jump to a #section link once they exist.
+if (location.hash) { const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); }
+</script>
+</body>
+</html>

@@ -32,6 +32,7 @@ make flash-planck   # build + flash; put the Planck in bootloader when asked
 make geonix         # -> geonix41_geonix41_yu17.bin
 make flash-geonix   # build + copy to the Geonix bootloader drive (hold Tab while plugging in)
 make ctrl           # -> massdrop_ctrl_yu17.bin
+make docs           # -> docs/layout.html, a visual map of every layer
 make all
 ```
 

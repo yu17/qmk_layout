@@ -9,6 +9,7 @@
 #   make flash-geonix    build + copy onto the Geonix bootloader drive (hold Tab while plugging in)
 #   make ctrl            build Massdrop CTRL firmware against pinned QMK 0.26.11 (last with arm_atsam)
 #   make all             build everything
+#   make docs            regenerate docs/layout.html (visual map of all layers)
 #   make clean           remove built firmware files and generated configs
 
 QMK_FIRMWARE    ?= $(abspath $(CURDIR)/../qmk_firmware)
@@ -22,7 +23,7 @@ KEYMAP     := yu17
 
 QMK = uv run --project $(CURDIR) qmk --config-file
 
-.PHONY: all planck flash-planck geonix flash-geonix ctrl clean
+.PHONY: all planck flash-planck geonix flash-geonix ctrl docs clean
 all: planck geonix ctrl
 
 .qmk/%.ini: Makefile
@@ -48,6 +49,9 @@ flash-geonix: geonix
 
 ctrl: .qmk/legacy.ini
 	$(QMK) $< compile -kb $(CTRL_KB) -km $(KEYMAP)
+
+docs:
+	python3 -I tools/layout_doc.py $(LEGACY_FIRMWARE)
 
 clean:
 	rm -rf .qmk *.bin *.hex *.uf2
