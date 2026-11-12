@@ -192,6 +192,7 @@ const LAYER_KEYS = [
   [/^MO\(1\)$/, ["Fn"]],
   [/^LLCK_LOWER$/, ["Lock","Lower"]],
   [/^LLCK_RAISE$/, ["Lock","Raise"]],
+  [/^FX_SET$/, ["Effect set","short/full"]],
 ];
 const MODS = new Set(["KC_LSFT","KC_RSFT","KC_LCTL","KC_RCTL","KC_LGUI","KC_RGUI","KC_LALT","KC_RALT"]);
 const NAV = new Set(["KC_LEFT","KC_RGHT","KC_UP","KC_DOWN","KC_HOME","KC_END","KC_PGUP","KC_PGDN"]);
@@ -203,6 +204,7 @@ const LIGHT = new Set(["LIGHT_OFF","LIGHT_ON","LED_TST","LOGO_MOD","TEST_CL","RG
 function category(c) {
   if (c === "_______") return "trns";
   if (c === "XXXXXXX") return "none";
+  if (c === "FX_SET") return "light";
   if (/^(MO|TO|TG|LT|TL_|LLCK_)/.test(c)) return "layer";
   if (/^KC_P(\d|AST|MNS|PLS|DOT|SLS|ENT)$/.test(c) || c === "KC_NUM") return "num";
   if (MODS.has(c)) return "mod";

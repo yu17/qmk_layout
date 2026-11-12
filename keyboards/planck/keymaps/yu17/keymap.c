@@ -128,7 +128,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | Esc  |LgtTog|Brgt+ | Spd+ | Eff+ | Hue+ | Sat+ |      |      |      |      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Shift|LEDtst|Brgt- | Spd- | Eff- | Hue- | Sat- |      |      |      |      | Mouse|
+ * | Shift|      |Brgt- | Spd- | Eff- | Hue- | Sat- |      |      |      |      | Mouse|
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | LCtrl|Settng| LGUI | LALT |      |    Space    |      |MusTog|      |      |      |
  * `-----------------------------------------------------------------------------------'
@@ -139,7 +139,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_4_EXTRA] = LAYOUT_planck_grid(
     KC_F13,  KC_F14,  KC_F15,  KC_F16,  KC_F17,  KC_F18,  KC_F19,  KC_F20,  KC_F21,  KC_F22,  KC_F23,  KC_F24,
     KC_ESC,  UG_TOGG, UG_VALU, UG_SPDU, UG_NEXT, UG_HUEU, UG_SATU, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-    KC_LSFT, LED_TST, UG_VALD, UG_SPDD, UG_PREV, UG_HUED, UG_SATD, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, TO(_5_MOUSE),
+    KC_LSFT, XXXXXXX, UG_VALD, UG_SPDD, UG_PREV, UG_HUED, UG_SATD, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, TO(_5_MOUSE),
     KC_LCTL, MO(_6_KBDCFG), KC_LGUI, KC_LALT, XXXXXXX, KC_SPC, KC_SPC, XXXXXXX, MU_TOGG, XXXXXXX, XXXXXXX, XXXXXXX
 ),
 
@@ -166,17 +166,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------------------------------------------------.
  * |      |Reboot|Debug |      |      |      |      |      |      |      |      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |MUSmod|Aud on|Audoff|AGnorm|AGswap|      |      |      |Plover|      |
+ * |      |      |MUSmod|Aud on|Audoff|AGnorm|AGswap|      |      |LEDtst|Plover|      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |      |Voice-|Voice+|Mus on|Musoff|      |      |NKOFF | NKON |WinOff| WinOn|      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |      |      |      |      |      |             |      |      |      | Boot |EEPclr|
  * `-----------------------------------------------------------------------------------'
  *   Boot = bootloader (for flashing). EEPclr = reset all saved settings.
+ *   LEDtst = blink the underglow rainbow test pattern.
  */
 [_6_KBDCFG] = LAYOUT_planck_grid(
     XXXXXXX, QK_RBT,  DB_TOGG, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-    XXXXXXX, XXXXXXX, MU_NEXT, AU_ON,   AU_OFF,  AG_NORM, AG_SWAP, XXXXXXX, XXXXXXX, XXXXXXX, PLOVER,  XXXXXXX,
+    XXXXXXX, XXXXXXX, MU_NEXT, AU_ON,   AU_OFF,  AG_NORM, AG_SWAP, XXXXXXX, XXXXXXX, LED_TST, PLOVER,  XXXXXXX,
     XXXXXXX, AU_PREV, AU_NEXT, MU_ON,   MU_OFF,  XXXXXXX, XXXXXXX, NK_OFF,  NK_ON,   GU_OFF,  GU_ON,   XXXXXXX,
     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT, EE_CLR
 ),

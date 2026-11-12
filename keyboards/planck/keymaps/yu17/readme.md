@@ -30,7 +30,7 @@ in the top-level README; every layer is also drawn in the comments of
 ### What you see
 
 * **Power-on self test:** the strip blinks a rainbow 3x when plugged in, each
-  LED a different colour. Also on Extra + `Z` (`LED_TST`).
+  LED a different colour. Also on Settings + `L` (`LED_TST`).
 * **Base layer:** the normal RGBLight effect (default: static light cyan).
 * **Other layers:** the whole strip in the layer's colour: green Lower,
   purple Raise, lemon Fn, orange Extra, red Mouse, white Settings, magenta

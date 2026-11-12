@@ -38,6 +38,7 @@ enum geonix_layers { // same numbering as the Planck keymap
 enum yu17_keycodes {
     LLCK_LOWER = QK_USER, // Fn + Lower: lock/unlock the Lower layer
     LLCK_RAISE,           // Fn + Raise: lock/unlock the Raise layer
+    FX_SET,               // switch RGB effect set: short (default) / full
 };
 
 #define LOWER TL_LOWR
@@ -129,17 +130,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | Esc  |LgtTog|Brgt+ | Spd+ | Eff+ | Hue+ | Sat+ |AmbTog|AmbBr+|AmbEf+|AmbHu+|      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Shift|LEDtst|Brgt- | Spd- | Eff- | Hue- | Sat- |      |AmbBr-|AmbEf-|AmbHu-| Mouse|
+ * | Shift|FxSet |Brgt- | Spd- | Eff- | Hue- | Sat- |      |AmbBr-|AmbEf-|AmbHu-| Mouse|
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | LCtrl|Settng| LGUI | LALT |      | Space| Space|      |      |      |      |      |
  * `-----------------------------------------------------------------------------------'
- *   LgtTog = all lights on/off (vendor RGB_RTOG). LEDtst = vendor colour test.
+ *   LgtTog = all lights on/off (vendor RGB_RTOG).
+ *   FxSet = Eff+/Eff- cycle the short effect set (default) or all 49 effects;
+ *   dim = short set, bright = full set. Not saved: every boot starts short.
  *   Settng is a hold key: Lower + Raise + Fn -> Settings layer.
  */
 [_EXTRA] = LAYOUT_tkl_ansi(
     KC_F13,  KC_F14,   KC_F15,  KC_F16,  KC_F17,  KC_F18,  KC_F19,  KC_F20,   KC_F21,    KC_F22,   KC_F23,   KC_F24,
     KC_ESC,  RGB_RTOG, UG_VALU, UG_SPDU, UG_NEXT, UG_HUEU, UG_SATU, LOGO_TOG, LOGO_VAI,  LOGO_MOD, LOGO_HUI, XXXXXXX,
-    KC_LSFT, TEST_CL,  UG_VALD, UG_SPDD, UG_PREV, UG_HUED, UG_SATD, XXXXXXX,  LOGO_VAD,  LOGO_RMOD, LOGO_HUD, TO(_MOUSE),
+    KC_LSFT, FX_SET,   UG_VALD, UG_SPDD, UG_PREV, UG_HUED, UG_SATD, XXXXXXX,  LOGO_VAD,  LOGO_RMOD, LOGO_HUD, TO(_MOUSE),
     KC_LCTL, MO(_KBDCFG), KC_LGUI, KC_LALT, XXXXXXX, KC_SPC, KC_SPC, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
 ),
 
@@ -168,7 +171,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------------------------------------------------.
  * | USB  | BT1  | BT2  | BT3  | 2.4G |      |      |      |      |      |      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * |      |      |      |      |      |      |      |      |      |      |      |      |
+ * |      |      |      |      |      |      |      |      |      |LEDtst|      |      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * |      | Batt |Sleep |LowLat|      |      |      | NKRO |      |WinOff| WinOn|      |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -177,12 +180,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *   BT1-3 / 2.4G: tap = connect, hold = pair (vendor behaviour).
  *   Batt: battery level. Sleep: cycle wireless sleep timer (T flashes).
  *   LowLat: hold 3 s = 2.4 GHz low-latency toggle. Reset3s: hold 3 s = factory reset.
+ *   LEDtst: vendor colour test.
  *   NKRO: vendor 6-key / all-key toggle (QMK's NK_ON/NK_OFF would be undone by
  *   the vendor library at the next power-up).
  */
 [_KBDCFG] = LAYOUT_tkl_ansi(
     MD_USB,  MD_BLE1, MD_BLE2, MD_BLE3, MD_24G,  XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
-    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, TEST_CL, XXXXXXX, XXXXXXX,
     XXXXXXX, QK_BAT,  TIME_ST, QK_DEB,  XXXXXXX, XXXXXXX, XXXXXXX, SIX_N,   XXXXXXX, GU_OFF,  GU_ON,   XXXXXXX,
     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, U_EE_CLR, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
 ),
@@ -221,6 +225,64 @@ static void seed_key_overrides(void) {
     vial_init(); // reload tap dance / combos / key overrides from EEPROM
 }
 
+/* ------------------------------------------------------------ Effect sets --
+ * One ordered list of every compiled-in RGB effect: the short set first, then
+ * the rest. Effect +/- (UG_NEXT/UG_PREV) step through it and wrap at the end
+ * of the short set, or at the end of the whole list once FX_SET switched to
+ * the full set. The switch is RAM-only: every boot starts with the short set,
+ * and a saved effect outside it is replaced by the default (solid colour).
+ * QMK's own effect numbers can't be reordered, hence the table. Vial can still
+ * pick any effect directly.
+ */
+static const uint8_t fx_order[] = {
+    // short set
+    RGB_MATRIX_SOLID_COLOR, RGB_MATRIX_ALPHAS_MODS, RGB_MATRIX_GRADIENT_LEFT_RIGHT, RGB_MATRIX_BREATHING,
+    RGB_MATRIX_BAND_VAL, RGB_MATRIX_BAND_SPIRAL_VAL, RGB_MATRIX_RIVERFLOW, RGB_MATRIX_HUE_WAVE, RGB_MATRIX_STARLIGHT,
+    RGB_MATRIX_PIXEL_FRACTAL, RGB_MATRIX_SOLID_REACTIVE_SIMPLE, RGB_MATRIX_SOLID_REACTIVE_WIDE, RGB_MATRIX_SOLID_SPLASH,
+    RGB_MATRIX_TYPING_HEATMAP,
+    // the rest of the full set
+    RGB_MATRIX_GRADIENT_UP_DOWN, RGB_MATRIX_BAND_SAT, RGB_MATRIX_BAND_PINWHEEL_SAT, RGB_MATRIX_BAND_PINWHEEL_VAL,
+    RGB_MATRIX_BAND_SPIRAL_SAT, RGB_MATRIX_CYCLE_ALL, RGB_MATRIX_CYCLE_LEFT_RIGHT, RGB_MATRIX_CYCLE_UP_DOWN,
+    RGB_MATRIX_CYCLE_OUT_IN, RGB_MATRIX_CYCLE_OUT_IN_DUAL, RGB_MATRIX_RAINBOW_MOVING_CHEVRON, RGB_MATRIX_CYCLE_PINWHEEL,
+    RGB_MATRIX_CYCLE_SPIRAL, RGB_MATRIX_DUAL_BEACON, RGB_MATRIX_RAINBOW_BEACON, RGB_MATRIX_RAINBOW_PINWHEELS,
+    RGB_MATRIX_FLOWER_BLOOMING, RGB_MATRIX_RAINDROPS, RGB_MATRIX_JELLYBEAN_RAINDROPS, RGB_MATRIX_HUE_BREATHING,
+    RGB_MATRIX_HUE_PENDULUM, RGB_MATRIX_PIXEL_RAIN, RGB_MATRIX_PIXEL_FLOW, RGB_MATRIX_DIGITAL_RAIN,
+    RGB_MATRIX_SOLID_REACTIVE, RGB_MATRIX_SOLID_REACTIVE_MULTIWIDE, RGB_MATRIX_SOLID_REACTIVE_CROSS,
+    RGB_MATRIX_SOLID_REACTIVE_MULTICROSS, RGB_MATRIX_SOLID_REACTIVE_NEXUS, RGB_MATRIX_SOLID_REACTIVE_MULTINEXUS,
+    RGB_MATRIX_SPLASH, RGB_MATRIX_MULTISPLASH, RGB_MATRIX_SOLID_MULTISPLASH, RGB_MATRIX_STARLIGHT_DUAL_HUE,
+    RGB_MATRIX_STARLIGHT_DUAL_SAT,
+};
+#define FX_SHORT_COUNT 14
+#define FX_FULL_COUNT ARRAY_SIZE(fx_order)
+_Static_assert(FX_FULL_COUNT == 49, "expected 45 board effects + 4 enabled in config.h");
+
+static bool fx_full = false; // RAM only - every boot starts with the short set
+
+static int8_t fx_index(uint8_t mode) {
+    for (uint8_t i = 0; i < FX_FULL_COUNT; i++) {
+        if (fx_order[i] == mode) return i;
+    }
+    return -1;
+}
+
+static bool fx_in_short_set(uint8_t mode) {
+    int8_t i = fx_index(mode);
+    return i >= 0 && i < FX_SHORT_COUNT;
+}
+
+static void fx_step(int8_t dir) {
+    uint8_t n = fx_full ? FX_FULL_COUNT : FX_SHORT_COUNT;
+    int8_t  i = fx_index(rgb_matrix_get_mode());
+    // Not in the table (e.g. set from Vial): start from the top. A full-set
+    // effect while the short set is active wraps back into the short set.
+    uint8_t next = i < 0 ? 0 : (uint8_t)((i + n + dir) % n);
+    rgb_matrix_mode(fx_order[next]);
+}
+
+static void fx_ensure_short(void) {
+    if (!fx_in_short_set(rgb_matrix_get_mode())) rgb_matrix_mode(RGB_MATRIX_DEFAULT_MODE);
+}
+
 /* ------------------------------------------------------ Windows-only --
  * The vendor post-init (inside keyboard_post_init_user, defined by the board)
  * turns on layer 1 if "Mac mode" was ever saved - layer 1 is Lower here.
@@ -230,6 +292,7 @@ void keyboard_post_init_kb(void) {
     Keyboard_Info.Mac_Win_Mode = INIT_WIN_MODE;
     if (vial_data_reset) seed_key_overrides();
     keyboard_post_init_user();
+    fx_ensure_short(); // boot with the short effect set
 }
 
 /* ------------------------------------------------------------ Lock keys --
@@ -245,6 +308,16 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
         case LLCK_RAISE:
             if (record->event.pressed) layer_lock_invert(_RAISE);
             return false;
+        case FX_SET:
+            if (record->event.pressed) {
+                fx_full = !fx_full;
+                if (!fx_full) fx_ensure_short();
+            }
+            return false;
+        case UG_NEXT:
+        case UG_PREV:
+            if (record->event.pressed) fx_step(keycode == UG_NEXT ? 1 : -1);
+            return false; // replaces QMK's own effect stepping
     }
     return true;
 }
@@ -274,7 +347,7 @@ enum key_class {
     C_OFF, C_TYPE, C_MOD, C_LAYER, C_NAV, C_FKEY, C_VOLUME, C_BRIGHT, C_LIGHT, C_AMBIENT,
     C_WIRELESS, C_SYSTEM, C_FEATURE, C_MOUSE, C_NUMPAD,
     // live state
-    C_NUM_OFF, C_CONN_ACTIVE, C_NKRO_ALL, C_NKRO_6, C_WIN_ON, C_WIN_OFF,
+    C_NUM_OFF, C_CONN_ACTIVE, C_NKRO_ALL, C_NKRO_6, C_WIN_ON, C_WIN_OFF, C_FX_SHORT, C_FX_FULL,
     C_COUNT
 };
 
@@ -302,6 +375,8 @@ static const uint8_t palette[C_COUNT][3] = {
     [C_NKRO_6]      = {21, 220, 100},  // 6-key rollover: orange
     [C_WIN_ON]      = {85, 220, 100},  // Win key enabled (lights GU_ON)
     [C_WIN_OFF]     = {0, 220, 100},   // Win key disabled (lights GU_OFF)
+    [C_FX_SHORT]    = {225, 110, 25},  // effect set: short (dim lighting pink)
+    [C_FX_FULL]     = {225, 170, 100}, // effect set: full (bright pink)
 };
 
 static const uint8_t layer_hs[][2] = {
@@ -333,6 +408,7 @@ static uint8_t classify(uint16_t kc) {
             return C_WIRELESS;
         case U_EE_CLR: case QK_WLO: case KC_UC: return C_SYSTEM;
         case RGB_RTOG: case TEST_CL: return C_LIGHT;
+        case FX_SET: return fx_full ? C_FX_FULL : C_FX_SHORT;
         case CW_TOGG: case QK_LLCK: return C_FEATURE;
         case TL_LOWR: case TL_UPPR: case LLCK_LOWER: case LLCK_RAISE: return C_LAYER;
         case KC_BRIGHTNESS_UP: case KC_BRIGHTNESS_DOWN: return C_BRIGHT;
@@ -380,7 +456,7 @@ static uint8_t  n_switch_keys = 0;
 
 typedef struct {
     layer_state_t layers;
-    uint8_t       leds, mode, channel, val;
+    uint8_t       leds, mode, channel, val, fx_full;
     uint16_t      kcfg;
 } indicator_sig_t;
 
@@ -425,6 +501,7 @@ bool rgb_matrix_indicators_user(void) {
         sig.channel = Keyboard_Info.Ble_Channel;
         sig.val     = val;
         sig.kcfg    = keymap_config.raw;
+        sig.fx_full = fx_full;
         if (layer != key_layer || memcmp(&sig, &last, sizeof(sig)) != 0 || timer_elapsed32(last_time) > 250) {
             refresh_colours(layer, val);
             key_layer = layer;

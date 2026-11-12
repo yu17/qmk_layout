@@ -32,7 +32,7 @@ Both are 4x12 grids and use the same layers, numbered the same way:
 | 3 | Fn | hold Fn (tap Fn = Menu/App) | F1-F12; Mute, Vol-, Vol+, Prev, Play/Pause, Next, Stop; PrtSc, ScrLk, Pause; screen brightness; Ins, Del, Right Shift; Right Alt, Right Win, Menu, Right Ctrl; lock Lower / lock Raise; Space = back to Base |
 | 4 | Extra | hold Lower + Raise | F13-F24, all lighting controls, Mouse layer key |
 | 5 | Mouse | Extra + Mouse key (stays on) | mouse movement, buttons, wheel; top-right key returns to Base |
-| 6 | Settings | hold Lower + Raise + Fn | keyboard configuration (Planck: audio, Alt/Win swap, NKRO, Win key, Plover, bootloader, reset; Geonix: wireless, battery, sleep timer, NKRO, Win key, factory reset) |
+| 6 | Settings | hold Lower + Raise + Fn | keyboard configuration (Planck: audio, Alt/Win swap, NKRO, Win key, LED test, Plover, bootloader, reset; Geonix: wireless, battery, sleep timer, NKRO, Win key, LED test, factory reset) |
 | 7 | Plover | Planck only: Settings + Plover | steno layer for the Plover app |
 
 Everywhere:
