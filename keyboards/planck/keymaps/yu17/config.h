@@ -38,7 +38,7 @@
  *  - Layer colours are shown even while the base glow is switched off
  *    (UG_TOGG on Extra), so the indicator can never "silently die".
  *  - On power-up the strip blinks a rainbow test pattern 3x (also on the
- *    LED_TST key on Extra) - a quick hardware check for every LED.
+ *    LED_TST key on Settings) - a quick hardware check for every LED.
  */
 #define RGBLIGHT_LAYERS
 #define RGBLIGHT_LAYER_BLINK
