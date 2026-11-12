@@ -87,13 +87,14 @@ Effect +/- (Extra + F / V) cycle a **short set** of calm, non-rainbow
 effects by default:
 
 `solid_color` (default), `alphas_mods`, `gradient_left_right`, `breathing`,
-`band_val`, `band_spiral_val`, `riverflow`, `hue_wave`, `starlight`,
+`band_val`, `band_spiral_val`, `riverflow`, `hue_wave`, `starlight_smooth`,
 `pixel_fractal`, `solid_reactive_simple`, `solid_reactive_wide`,
 `solid_splash`, `typing_heatmap`.
 
-Extra + Z (`FX_SET`) switches to the **full set** of all 49 effects (the 45
+Extra + Z (`FX_SET`) switches to the **full set** of all 50 effects (the 45
 the board enables plus `solid_reactive_simple`, `pixel_fractal`,
-`pixel_rain` and `typing_heatmap`, enabled in `config.h`); the key is dim
+`pixel_rain`, `typing_heatmap` and `starlight_smooth`, enabled in
+`config.h`); the key is dim
 pink for the short set and bright pink for the full set. The choice is not
 saved: every boot starts with the short set, and if the saved effect is not
 in it, the keyboard switches to `solid_color`. Switching back to the short
@@ -101,7 +102,7 @@ set does the same. The Vial app can still select any effect directly.
 
 How: `fx_order[]` in `keymap.c` lists every effect, short set first.
 Effect +/- find the current effect's position, add or subtract one, and wrap
-at 14 (short) or 49 (full); an effect outside the short set while the short
+at 14 (short) or 50 (full); an effect outside the short set while the short
 set is active therefore wraps back into it. QMK's own effect numbering can't
 be reordered, hence the table. Notes: `gradient_left_right` spreads more
 colours as the effect speed rises (high speed looks like a rainbow), and

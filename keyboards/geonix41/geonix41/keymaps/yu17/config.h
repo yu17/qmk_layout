@@ -40,13 +40,15 @@
 // Layer Lock (Fn + Lower / Fn + Raise) has no idle timeout: a locked numpad
 // must not drop out mid-game. Unlock with Fn + Space or the same lock key.
 
-// RGB effects: the board enables 45; also enable the 4 it leaves off, so the
-// full set (switchable at runtime, see keymap.c) has all 49. Boot/reset
+// RGB effects: the board enables 45; also enable the 4 it leaves off and
+// starlight_smooth (not in the board's list), so the full set (switchable at
+// runtime, see keymap.c) has 50. Boot/reset
 // default is a plain colour instead of QMK's rainbow cycle.
 #define ENABLE_RGB_MATRIX_SOLID_REACTIVE_SIMPLE
 #define ENABLE_RGB_MATRIX_PIXEL_FRACTAL
 #define ENABLE_RGB_MATRIX_PIXEL_RAIN
 #define ENABLE_RGB_MATRIX_TYPING_HEATMAP
+#define ENABLE_RGB_MATRIX_STARLIGHT_SMOOTH
 #define RGB_MATRIX_DEFAULT_MODE RGB_MATRIX_SOLID_COLOR
 
 // Tri-layer: Lower + Raise -> Extra

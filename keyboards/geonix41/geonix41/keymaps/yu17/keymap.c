@@ -135,7 +135,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * | LCtrl|Settng| LGUI | LALT |      | Space| Space|      |      |      |      |      |
  * `-----------------------------------------------------------------------------------'
  *   LgtTog = all lights on/off (vendor RGB_RTOG).
- *   FxSet = Eff+/Eff- cycle the short effect set (default) or all 49 effects;
+ *   FxSet = Eff+/Eff- cycle the short effect set (default) or all 50 effects;
  *   dim = short set, bright = full set. Not saved: every boot starts short.
  *   Settng is a hold key: Lower + Raise + Fn -> Settings layer.
  */
@@ -237,7 +237,7 @@ static void seed_key_overrides(void) {
 static const uint8_t fx_order[] = {
     // short set
     RGB_MATRIX_SOLID_COLOR, RGB_MATRIX_ALPHAS_MODS, RGB_MATRIX_GRADIENT_LEFT_RIGHT, RGB_MATRIX_BREATHING,
-    RGB_MATRIX_BAND_VAL, RGB_MATRIX_BAND_SPIRAL_VAL, RGB_MATRIX_RIVERFLOW, RGB_MATRIX_HUE_WAVE, RGB_MATRIX_STARLIGHT,
+    RGB_MATRIX_BAND_VAL, RGB_MATRIX_BAND_SPIRAL_VAL, RGB_MATRIX_RIVERFLOW, RGB_MATRIX_HUE_WAVE, RGB_MATRIX_STARLIGHT_SMOOTH,
     RGB_MATRIX_PIXEL_FRACTAL, RGB_MATRIX_SOLID_REACTIVE_SIMPLE, RGB_MATRIX_SOLID_REACTIVE_WIDE, RGB_MATRIX_SOLID_SPLASH,
     RGB_MATRIX_TYPING_HEATMAP,
     // the rest of the full set
@@ -250,11 +250,11 @@ static const uint8_t fx_order[] = {
     RGB_MATRIX_SOLID_REACTIVE, RGB_MATRIX_SOLID_REACTIVE_MULTIWIDE, RGB_MATRIX_SOLID_REACTIVE_CROSS,
     RGB_MATRIX_SOLID_REACTIVE_MULTICROSS, RGB_MATRIX_SOLID_REACTIVE_NEXUS, RGB_MATRIX_SOLID_REACTIVE_MULTINEXUS,
     RGB_MATRIX_SPLASH, RGB_MATRIX_MULTISPLASH, RGB_MATRIX_SOLID_MULTISPLASH, RGB_MATRIX_STARLIGHT_DUAL_HUE,
-    RGB_MATRIX_STARLIGHT_DUAL_SAT,
+    RGB_MATRIX_STARLIGHT_DUAL_SAT, RGB_MATRIX_STARLIGHT,
 };
 #define FX_SHORT_COUNT 14
 #define FX_FULL_COUNT ARRAY_SIZE(fx_order)
-_Static_assert(FX_FULL_COUNT == 49, "expected 45 board effects + 4 enabled in config.h");
+_Static_assert(FX_FULL_COUNT == 50, "expected 45 board effects + 5 enabled in config.h");
 
 static bool fx_full = false; // RAM only - every boot starts with the short set
 
