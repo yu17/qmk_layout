@@ -69,3 +69,37 @@ in the top-level README; every layer is also drawn in the comments of
     one (or its data-in/out joint) is bad. WS2812s pass data down a chain.
 * If the lights act strangely after flashing, reset all saved settings with
   Settings + bottom-right (`EE_CLR`).
+
+### Hardware check build (`yu17_diag`)
+
+`make flash-planck-diag` flashes the same layout with one change: the LED
+test key (Settings + `L`) **types** a report into whatever has focus (open a
+text editor first). Each press moves to the next step: (1) report, then the
+data pin A1 is held at 3.3 V; (2) A1 held at 0 V; (3) back to normal. Go back
+to the normal firmware with `make flash-planck`.
+
+| Report line | Healthy | Otherwise |
+|---|---|---|
+| `DRIVER pinmode=2 af=1 timer=running dma=running` | the MCU is sending LED data on A1 | a firmware/driver problem, not hardware |
+| `A1 pullup=1 pulldown=0 drivehigh=1 drivelow=0` | no short on the data line, MCU pin can drive it | `pullup=0`: line pulled to GND (short, damaged LED input, or LEDs without 5 V); `pulldown=1`: pulled to a supply; `drivehigh=0`/`drivelow=1`: hard short or damaged MCU pin |
+| `PADS dip ... enc ...` | all `1` when no DIP switch/encoder is fitted | a `0` on an empty pad = short/leak on that pin |
+| `RGB enabled=1 ... val=...` | val > 0 | val 0 = brightness at zero |
+
+A healthy `A1` line cannot tell "LED 1 is dead" from "the trace is open",
+so use a multimeter:
+
+1. **5 V at every LED**: VDD to GND on each LED (or its pads) ~5 V. Missing
+   at all of them: the supply trace or USB 5 V; missing at some: a joint or a
+   break between those.
+2. **Data at LED 1** (per QMK's LED map, seen from above: the first in the
+   chain is near the centre of the board, slightly below the middle; the
+   chain then runs to the lower right, up the right edge, along the top to
+   the left, down the left edge and back towards the bottom centre): step 1
+   of the check holds A1 high, so its DIN pad should read ~3.3 V to GND, and
+   ~0 V in step 2. If A1 reads right at the MCU side but not at DIN: broken
+   trace/joint. If DIN follows correctly but nothing lights: LED 1 is dead
+   (most likely victim of an electrostatic discharge; it is the first to
+   see any spike on the data line). Replace it, or bridge its DIN to DOUT
+   pad to test the rest of the chain.
+3. **No 5 V or only partial lighting**: check the LED's orientation and
+   reflow its joints.

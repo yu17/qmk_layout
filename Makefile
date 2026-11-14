@@ -5,6 +5,7 @@
 #
 #   make planck          build Planck (Drop rev6) firmware against upstream qmk_firmware
 #   make flash-planck    build + flash (put the Planck in bootloader mode when asked)
+#   make planck-diag / flash-planck-diag   hardware-check build (yu17_diag, see its readme)
 #   make geonix          build Geonix Rev2.5-1U firmware against the Chosfox vial-qmk fork
 #   make flash-geonix    build + copy onto the Geonix bootloader drive (hold Tab while plugging in)
 #   make ctrl            build Massdrop CTRL firmware against pinned QMK 0.26.11 (last with arm_atsam)
@@ -23,7 +24,7 @@ KEYMAP     := yu17
 
 QMK = uv run --project $(CURDIR) qmk --config-file
 
-.PHONY: all planck flash-planck geonix flash-geonix ctrl docs clean
+.PHONY: all planck flash-planck planck-diag flash-planck-diag geonix flash-geonix ctrl docs clean
 all: planck geonix ctrl
 
 .qmk/%.ini: Makefile
@@ -36,6 +37,12 @@ planck: .qmk/upstream.ini
 
 flash-planck: .qmk/upstream.ini
 	$(QMK) $< flash -kb $(PLANCK_KB) -km $(KEYMAP)
+
+planck-diag: .qmk/upstream.ini
+	$(QMK) $< compile -kb $(PLANCK_KB) -km $(KEYMAP)_diag
+
+flash-planck-diag: .qmk/upstream.ini
+	$(QMK) $< flash -kb $(PLANCK_KB) -km $(KEYMAP)_diag
 
 geonix: .qmk/geonix.ini
 	$(QMK) $< compile -kb $(GEONIX_KB) -km $(KEYMAP)
