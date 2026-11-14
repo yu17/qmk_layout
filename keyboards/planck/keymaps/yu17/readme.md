@@ -62,7 +62,14 @@ in the top-level README; every layer is also drawn in the comments of
   the WS2812's 800 kHz (fixed upstream in Oct 2024). That, and the saved
   "off" state, are fixed in firmware.
 * **As of 2026-11-11 the LEDs are still dark with this firmware**, including
-  the power-on test, so the remaining cause is most likely hardware:
+  the power-on test, so the remaining cause is most likely hardware.
+* **2026-11-14 hardware check (`yu17_diag`):** driver running (`pinmode=2
+  af=1`, timer and DMA running); A1 `pullup=0 pulldown=0 drivehigh=1
+  drivelow=0`, i.e. the data line is pulled low by something weaker than
+  the MCU's output but stronger than its ~40 kOhm pull-up: a leaky (damaged)
+  LED 1 input, or LEDs without 5 V. All DIP/encoder pads read 1 (no leaks),
+  RGB enabled, val 255. Next: multimeter (see below).
+* General hints:
   * Nothing lights: check 5 V and GND at the LED pads, and the data line from
     the MCU pin A1 to the first LED's data-in.
   * The first N LEDs light and the rest stay dark: the LED after the last lit
