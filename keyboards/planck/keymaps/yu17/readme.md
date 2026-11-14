@@ -63,12 +63,23 @@ in the top-level README; every layer is also drawn in the comments of
   "off" state, are fixed in firmware.
 * **As of 2026-11-11 the LEDs are still dark with this firmware**, including
   the power-on test, so the remaining cause is most likely hardware.
-* **2026-11-14 hardware check (`yu17_diag`):** driver running (`pinmode=2
-  af=1`, timer and DMA running); A1 `pullup=0 pulldown=0 drivehigh=1
-  drivelow=0`, i.e. the data line is pulled low by something weaker than
-  the MCU's output but stronger than its ~40 kOhm pull-up: a leaky (damaged)
-  LED 1 input, or LEDs without 5 V. All DIP/encoder pads read 1 (no leaks),
-  RGB enabled, val 255. Next: multimeter (see below).
+* **2026-11-14 hardware check (`yu17_diag`):** LED driver running; A1
+  `pullup=0 pulldown=0 drivehigh=1 drivelow=0`; DIP/encoder pads fine;
+  RGB enabled, val 255.
+* **Bare-board measurements (2026-11-14):** 5 V on every LED, also while
+  dark; DIN to GND 11.2 kOhm on *all* LEDs (so the low A1 reading above is
+  just the LEDs' normal input load, not a leak); A1 held high gives 3.25 V at
+  LED 1's DIN (trace intact, no level shifter). Lights sometimes work on a
+  bare board after a rest; failures show LED 1 alone in green or yellow (it
+  decodes only the first one or two of its three colour bytes) or all dark.
+* **Most likely cause:** the data signal is out of spec. The WS2812B needs
+  a high level of at least 0.7 x VDD (3.5 V at 5 V) and the STM32 drives
+  3.3 V directly, so only LED 1, the one LED that sees the 3.3 V signal, sits
+  at its threshold (LEDs 2-9 get a regenerated 5 V signal from LED 1).
+  Temperature and supply voltage move it either side. Test: remove LED 1 and
+  bridge its DIN to DOUT; if LED 2 now fails the same way, it is the signal,
+  not the LED. Fix: power LED 1 through a diode (about 4.3 V, threshold
+  about 3 V) or add a 5 V buffer such as a 74AHCT1G125 between A1 and DIN.
 * General hints:
   * Nothing lights: check 5 V and GND at the LED pads, and the data line from
     the MCU pin A1 to the first LED's data-in.
