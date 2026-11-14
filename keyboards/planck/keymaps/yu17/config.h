@@ -54,7 +54,9 @@
 #define RGBLIGHT_HUE_STEP 10
 #define RGBLIGHT_SAT_STEP 17
 #define RGBLIGHT_VAL_STEP 17
-#define RGBLIGHT_LIMIT_VAL 255
+#ifndef RGBLIGHT_LIMIT_VAL
+#    define RGBLIGHT_LIMIT_VAL 255 // can be lowered per build: -e EXTRAFLAGS=-DRGBLIGHT_LIMIT_VAL=n
+#endif
 
 // A few base-layer animations to cycle through with UG_NEXT (Extra).
 #define RGBLIGHT_EFFECT_BREATHING
