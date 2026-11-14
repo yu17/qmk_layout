@@ -115,3 +115,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
     return false;
 }
+
+#ifdef DIAG_HOLD_HIGH
+/* No-keys variant (build with -e EXTRAFLAGS=-DDIAG_HOLD_HIGH): 1.5 s after
+ * power-up, A1 is switched from LED data to a steady HIGH (3.3 V) and stays
+ * there, for measuring the data line on a bare board with a multimeter. */
+void housekeeping_task_user(void) {
+    static bool done = false;
+    if (!done && timer_read32() > 1500) {
+        gpio_set_pin_output_push_pull(DIAG_PIN);
+        gpio_write_pin_high(DIAG_PIN);
+        done = true;
+    }
+}
+#endif
