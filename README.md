@@ -43,7 +43,7 @@ Everywhere:
   Fn + Space or the same combo.
 * Arrows are Left, Down, Up, Right; PgDn/PgUp and the mouse arrows follow.
 * Each layer has its own colour: green Lower, purple Raise, lemon Fn, orange
-  Extra, red Mouse, white Settings (Planck: whole underglow; Geonix: Space
+  Extra, red Mouse, white Settings (Planck: whole underglow, currently dark in the case, see its readme; Geonix: Space
   keys, plus per-key hints).
 
 ## Building

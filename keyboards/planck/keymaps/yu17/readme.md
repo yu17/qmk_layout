@@ -27,6 +27,10 @@ in the top-level README; every layer is also drawn in the comments of
 
 ## Underglow (9 hand-soldered WS2812 LEDs)
 
+**Status: not working when the board is in its case** (out-of-spec 3.3 V
+data signal; see *Status and troubleshooting*). Everything below is what the
+firmware does when the LEDs receive the signal.
+
 ### What you see
 
 * **Power-on self test:** the strip blinks a rainbow 3x when plugged in, each
@@ -72,14 +76,34 @@ in the top-level README; every layer is also drawn in the comments of
   LED 1's DIN (trace intact, no level shifter). Lights sometimes work on a
   bare board after a rest; failures show LED 1 alone in green or yellow (it
   decodes only the first one or two of its three colour bytes) or all dark.
-* **Most likely cause:** the data signal is out of spec. The WS2812B needs
-  a high level of at least 0.7 x VDD (3.5 V at 5 V) and the STM32 drives
-  3.3 V directly, so only LED 1, the one LED that sees the 3.3 V signal, sits
-  at its threshold (LEDs 2-9 get a regenerated 5 V signal from LED 1).
-  Temperature and supply voltage move it either side. Test: remove LED 1 and
-  bridge its DIN to DOUT; if LED 2 now fails the same way, it is the signal,
-  not the LED. Fix: power LED 1 through a diode (about 4.3 V, threshold
-  about 3 V) or add a 5 V buffer such as a 74AHCT1G125 between A1 and DIN.
+* **Backup PCB (2026-11-14):** a brand-new spare rev6 PCB with a fresh
+  batch of WS2812Bs behaves the same way: all LEDs light reliably as a bare
+  board, none light once it is screwed into the aluminium case (the case is
+  anodised, so not conductive on the surface; the six standoffs are
+  conductive and grounded). So damaged LEDs and the static shocks are ruled
+  out as the cause.
+* **Firmware tried in the case, none lit:**
+  * current firmware (WS2812 timing 333 / 889 ns high for 0 / 1, 1.25 us bit)
+  * longer pulses: `-e "EXTRAFLAGS=-DWS2812_T0H=400 -DWS2812_T1H=950
+    -DWS2812_TIMING=1400"` and `... T0H=450 T1H=1000 TIMING=1500`
+  * the 2023 firmware the LEDs used to work with
+    (`archive/planck_rev6_drop_yu17-2023-12-11.bin`)
+* **Conclusion (investigation closed 2026-11-14):** not a firmware problem.
+  The data signal is out of spec: the WS2812B needs a high level of at least
+  0.7 x VDD (3.5 V at 5 V) and the STM32 drives 3.3 V (3.25 V measured at
+  LED 1) with no level shifter, so the first LED sits at its input threshold.
+  Something about mounting in the case (not identified) tips it into
+  failing. LED 1 is the only LED that sees the 3.3 V signal; LEDs 2-9 get a
+  regenerated 5 V signal, which is why failures show LED 1 alone in a wrong
+  colour, or nothing. The only real fix is hardware: power LED 1 through a
+  diode (about 4.3 V, threshold about 3 V) or add a 5 V buffer such as a
+  74AHCT1G125 between A1 and LED 1's DIN. Not done: the pads are tiny, the
+  trace can't be followed on the multilayer board, and the keyboard is
+  discontinued with no spare boards left to risk. Both boards work fine as
+  keyboards; the LED code stays, so the lights work whenever they can.
+* Untried (in case this is ever picked up again): finding *what* in the case
+  matters, by resting the board in the case without screws, adding screws
+  one at a time, and putting an insulating sheet under the board.
 * General hints:
   * Nothing lights: check 5 V and GND at the LED pads, and the data line from
     the MCU pin A1 to the first LED's data-in.
