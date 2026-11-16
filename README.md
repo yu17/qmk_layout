@@ -28,7 +28,7 @@ Both are 4x12 grids and use the same layers, numbered the same way:
 |---|---|---|---|
 | 0 | Base | default | QWERTY; bottom row Ctrl, Fn, Win, Alt, Lower, Space, Space, Raise, Left, Down, Up, Right |
 | 1 | Lower | hold Lower; lock with Fn + Lower | digits row, `- = [ ] \`, Del (right of `=`), Caps Word (A), Home / PgDn / PgUp / End |
-| 2 | Raise | hold Raise; lock with Fn + Raise | keypad (keypad codes + Num Lock) on the right, arrows in the middle, left half falls through (WASD etc. for games); Num Lock is switched on automatically |
+| 2 | Raise | hold Raise; lock with Fn + Raise | keypad (keypad codes + Num Lock) on the right, arrows in the middle, left half falls through (WASD etc. for games); Num Lock is left to the host (press it once) |
 | 3 | Fn | hold Fn (tap Fn = Menu/App) | F1-F12; Mute, Vol-, Vol+, Prev, Play/Pause, Next, Stop; PrtSc, ScrLk, Pause; screen brightness; Ins, Del, Right Shift; Right Alt, Right Win, Menu, Right Ctrl; lock Lower / lock Raise; Space = back to Base |
 | 4 | Extra | hold Lower + Raise | F13-F24, all lighting controls, Mouse layer key |
 | 5 | Mouse | Extra + Mouse key (stays on) | mouse movement, buttons, wheel; top-right key returns to Base |

@@ -85,8 +85,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Raise  (numpad; left half = normal keys, e.g. WASD for games)          LED: purple
  * Lock it with Fn + Raise; Fn + Space (or Fn + Raise again) unlocks.
- * Keypad codes (KC_P*), so games/sims see real numpad keys; Num Lock is
- * switched on automatically when this layer turns on (wired USB only).
+ * Keypad codes (KC_P*), so games/sims see real numpad keys (with Num Lock
+ * on; the host keeps that state, the keypad keys show it).
  * ,-----------------------------------------------------------------------------------.
  * | Tab  |   Q  |   W  |   E  |   R  |   T  |      |NumLck|  7   |  8   |  9   |  *   |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -289,19 +289,6 @@ bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 
-/* -------------------------------------------------------- Auto Num Lock --
- * Raise is a keypad: switch Num Lock on when it turns on. Only over USB -
- * whether the wireless link reports the host's Num Lock state back is
- * unknown, and guessing wrong would flip Num Lock off instead.
- */
-layer_state_t layer_state_set_user(layer_state_t state) {
-    if (Keyboard_Info.Key_Mode == QMK_USB_MODE && layer_state_cmp(state, _RAISE) && !layer_state_cmp(layer_state, _RAISE) &&
-        !host_keyboard_led_state().num_lock) {
-        tap_code(KC_NUM);
-    }
-    return state;
-}
-
 /* ------------------------------------------------------ Per-key colours --
  * Base layer: the normal RGB effect (plus the Caps indicator).
  * Any other layer: every key shows what it does (palette below), keys that
@@ -371,7 +358,7 @@ static uint8_t classify(uint16_t kc) {
         case GU_ON: return keymap_config.no_gui ? C_OFF : C_WIN_ON;
         case GU_OFF: return keymap_config.no_gui ? C_WIN_OFF : C_OFF;
         case QK_BAT: case QK_DEB: case TIME_ST: case TIME_DT:
-        case QMK_KB_2P4G_PAIR: case QMK_KB_BLE1_PAIR: case QMK_KB_BLE2_PAIR:
+        case QMK_KB_2P4G_PAIR: case QMK_KB_BLE1_PAIR: case QMK_KB_BLE2_PAIR: case QMK_KB_BLE3_PAIR:
             return C_WIRELESS;
         case U_EE_CLR: case QK_WLO: case KC_UC: return C_SYSTEM;
         case RGB_RTOG: case TEST_CL: return C_LIGHT;

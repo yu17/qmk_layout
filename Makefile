@@ -24,10 +24,13 @@ KEYMAP     := yu17
 
 QMK = uv run --project $(CURDIR) qmk --config-file
 
-.PHONY: all planck flash-planck planck-diag flash-planck-diag geonix flash-geonix ctrl docs clean
+.PHONY: FORCE all planck flash-planck planck-diag flash-planck-diag geonix flash-geonix ctrl docs clean
 all: planck geonix ctrl
 
-.qmk/%.ini: Makefile
+FORCE:
+
+# Regenerated every run, so QMK_FIRMWARE=... etc. overrides always apply.
+.qmk/%.ini: FORCE
 	@mkdir -p .qmk
 	@printf '[user]\nqmk_home = %s\noverlay_dir = %s\n' \
 		"$(if $(filter geonix,$*),$(GEONIX_FIRMWARE),$(if $(filter legacy,$*),$(LEGACY_FIRMWARE),$(QMK_FIRMWARE)))" "$(CURDIR)" > $@
@@ -52,7 +55,7 @@ geonix: .qmk/geonix.ini
 flash-geonix: geonix
 	@dev=$$(for d in /dev/sd?; do udevadm info -q property $$d 2>/dev/null | grep -q '^ID_MODEL=RDMCTMZT_DFU$$' && echo $$d; done | head -1); \
 	if [ -z "$$dev" ]; then echo "Geonix bootloader drive not found: unplug, hold Tab, plug in, retry."; exit 1; fi; \
-	echo "Flashing via $$dev"; MTOOLS_SKIP_CHECK=1 mcopy -i $$dev geonix41_geonix41_yu17.bin ::GEONIX.BIN && sync && echo "Done - keyboard reboots by itself."
+	echo "Flashing via $$dev"; MTOOLS_SKIP_CHECK=1 mcopy -o -i $$dev geonix41_geonix41_yu17.bin ::GEONIX.BIN && sync && echo "Done - keyboard reboots by itself."
 
 ctrl: .qmk/legacy.ini
 	$(QMK) $< compile -kb $(CTRL_KB) -km $(KEYMAP)

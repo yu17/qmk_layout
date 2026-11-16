@@ -12,8 +12,6 @@ in Chosfox's closed library (`lib/rdr_lib/librdrcommon.a`).
 * **Per-key colour hints** instead of a one-colour underglow (below).
 * **Wireless** controls, battery, sleep timer and low-latency mode on
   Settings; the ambient (side/logo) strip's controls on Extra.
-* **Num Lock** is switched on automatically when Raise turns on **only over
-  USB** (see below); when wireless, use the Num Lock key on Raise.
 * **NKRO** uses the vendor's 6-key / all-key toggle (one key), not QMK's
   NKRO on/off keys.
 
@@ -181,7 +179,7 @@ in mind when changing the keymap:
   those are used rather than `RM_*`.
 * **Status.** `Keyboard_Info` (exported) holds the connection mode, Bluetooth
   channel, NKRO, Mac/Win, light on/off and ambient settings; it is read for
-  the live colours and auto Num Lock (USB only: `Key_Mode == QMK_USB_MODE`).
+  the live colours.
 * **Vial key overrides** (and combos, tap dances) live in EEPROM, so a
   keymap's `key_overrides[]` is ignored; defaults would have to be written
   into Vial's EEPROM after it resets (it does on every new build: its

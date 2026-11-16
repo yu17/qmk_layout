@@ -85,8 +85,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Raise  (numpad; left half = normal keys, e.g. WASD for games)          LED: purple
  * Lock it with Fn + Raise; Fn + Space (or Fn + Raise again) unlocks.
- * Keypad codes (KC_P*), so games/sims see real numpad keys; Num Lock is
- * switched on automatically when this layer turns on.
+ * Keypad codes (KC_P*), so games/sims see real numpad keys (with Num Lock
+ * on; the host keeps that state).
  * ,-----------------------------------------------------------------------------------.
  * | Tab  |   Q  |   W  |   E  |   R  |   T  |      |NumLck|  7   |  8   |  9   |  *   |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -258,10 +258,6 @@ float plover_gb_song[][2] = SONG(PLOVER_GOODBYE_SOUND);
 #endif
 
 layer_state_t layer_state_set_user(layer_state_t state) {
-    // Raise is a keypad: make sure Num Lock is on when it turns on.
-    if (layer_state_cmp(state, _2_RAISE) && !layer_state_cmp(layer_state, _2_RAISE) && !host_keyboard_led_state().num_lock) {
-        tap_code(KC_NUM);
-    }
     rgblight_set_layer_state(LIT_LOWER, layer_state_cmp(state, _1_LOWER));
     rgblight_set_layer_state(LIT_RAISE, layer_state_cmp(state, _2_RAISE));
     rgblight_set_layer_state(LIT_FN, layer_state_cmp(state, _3_FN));
@@ -339,7 +335,7 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
             if (clockwise) {
                 muse_tempo += 1;
             } else {
-                muse_tempo -= 1;
+                if (muse_tempo > 1) muse_tempo -= 1; // used as a divisor
             }
         }
     } else {
