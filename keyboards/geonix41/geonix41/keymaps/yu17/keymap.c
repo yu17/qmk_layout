@@ -85,6 +85,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* Raise  (numpad; left half = normal keys, e.g. WASD for games)          LED: purple
  * Lock it with Fn + Raise; Fn + Space (or Fn + Raise again) unlocks.
+ * The Raise key itself is dead here (not transparent), so pressing it while
+ * Raise is locked can't release the lock.
  * Keypad codes (KC_P*), so games/sims see real numpad keys (with Num Lock
  * on; the host keeps that state, the keypad keys show it).
  * ,-----------------------------------------------------------------------------------.
@@ -101,7 +103,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     _______, _______, _______, _______, _______, _______, XXXXXXX, KC_NUM,  KC_P7,   KC_P8,   KC_P9,   KC_PAST,
     _______, _______, _______, _______, _______, _______, KC_UP,   XXXXXXX, KC_P4,   KC_P5,   KC_P6,   KC_PMNS,
     _______, _______, _______, _______, _______, KC_LEFT, KC_DOWN, KC_RGHT, KC_P1,   KC_P2,   KC_P3,   KC_PPLS,
-    _______, _______, _______, _______, LOWER,   _______, _______, _______, KC_P0,   KC_PDOT, KC_PSLS, KC_PENT
+    _______, _______, _______, _______, LOWER,   _______, _______, XXXXXXX, KC_P0,   KC_PDOT, KC_PSLS, KC_PENT
 ),
 
 /* Fn                                                                      LED: lemon

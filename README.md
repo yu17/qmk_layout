@@ -39,7 +39,8 @@ Everywhere:
 
 * **Fn + Space** returns to Base and releases a locked layer.
 * **Layer lock** (Fn + Lower / Fn + Raise) has no timeout; release it with
-  Fn + Space or the same combo.
+  Fn + Space or the same combo. Pressing Lower or Raise alone does not
+  release it.
 * Arrows are Left, Down, Up, Right; PgDn/PgUp and the mouse arrows follow.
 * Each layer has its own colour: green Lower, purple Raise, lemon Fn, orange
   Extra, red Mouse, white Settings (Planck: whole underglow, currently dark in the case, see its readme; Geonix: Space
