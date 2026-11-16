@@ -51,11 +51,23 @@ geonix: .qmk/geonix.ini
 	$(QMK) $< compile -kb $(GEONIX_KB) -km $(KEYMAP)
 
 # Geonix bootloader = FAT12 USB drive "RDMCTMZT DFU" (03eb:2045); copying the
-# .bin onto it flashes and reboots. Written raw with mtools (no mount needed).
+# .bin onto it flashes and reboots. If the raw device is writable (udev rule
+# udev/70-geonix-bootloader.rules, or the disk group) it is written raw with
+# mtools; otherwise it is mounted through udisks (no extra rights needed) and
+# the file copied in.
 flash-geonix: geonix
 	@dev=$$(for d in /dev/sd?; do udevadm info -q property $$d 2>/dev/null | grep -q '^ID_MODEL=RDMCTMZT_DFU$$' && echo $$d; done | head -1); \
 	if [ -z "$$dev" ]; then echo "Geonix bootloader drive not found: unplug, hold Tab, plug in, retry."; exit 1; fi; \
-	echo "Flashing via $$dev"; MTOOLS_SKIP_CHECK=1 mcopy -o -i $$dev geonix41_geonix41_yu17.bin ::GEONIX.BIN && sync && echo "Done - keyboard reboots by itself."
+	if [ -w "$$dev" ]; then \
+		echo "Flashing via $$dev (raw)"; \
+		MTOOLS_SKIP_CHECK=1 mcopy -o -i $$dev geonix41_geonix41_yu17.bin ::GEONIX.BIN && sync; \
+	else \
+		mnt=$$(findmnt -n -o TARGET --source $$dev); \
+		if [ -z "$$mnt" ]; then udisksctl mount --no-user-interaction -b $$dev >/dev/null && mnt=$$(findmnt -n -o TARGET --source $$dev); fi; \
+		if [ -z "$$mnt" ]; then echo "Could not mount $$dev"; exit 1; fi; \
+		echo "Flashing via $$mnt (mounted $$dev)"; \
+		cp geonix41_geonix41_yu17.bin "$$mnt/GEONIX.BIN" && sync; \
+	fi && echo "Done - the keyboard reboots by itself within a few seconds."
 
 ctrl: .qmk/legacy.ini
 	$(QMK) $< compile -kb $(CTRL_KB) -km $(KEYMAP)

@@ -97,8 +97,12 @@ cd ../qmk_firmware && git pull --ff-only && git submodule update --init --recurs
 * **Geonix** (verified 2026-11-11): unplug, hold **Tab** and plug in. The
   keyboard shows up as a 118 KB USB drive `RDMCTMZT DFU` (`03eb:2045`);
   `make flash-geonix` copies the firmware onto it and it reboots by itself
-  (by hand: `mcopy -i /dev/sdX geonix41_geonix41_yu17.bin ::GEONIX.BIN && sync`,
-  or drag the file in a file manager). To roll back, copy the stock
+  within a few seconds. No `disk` group needed (verified 2026-11-16): if the
+  raw device isn't writable, the drive is mounted through udisks (as a file
+  manager would) and the file copied in. Optional: install
+  `udev/70-geonix-bootloader.rules` to let the logged-in user write just
+  this drive raw (with `mcopy`) instead. By hand: drag the `.bin` onto the
+  drive in a file manager. To roll back, copy the stock
   `qmk_firmware_geonix41/geonix41_geonix41_vial.bin` the same way.
 * **CTRL:** see its readme (needs `mdloader`).
 

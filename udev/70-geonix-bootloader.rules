@@ -1,0 +1,8 @@
+# Chosfox Geonix bootloader drive (hold Tab while plugging in).
+# Gives the user logged in at the local seat read/write access to this one
+# block device while it is plugged in (systemd "uaccess" ACL), so
+# `make flash-geonix` can write it raw without the disk group.
+# 03eb:2045 is LUFA's generic mass-storage ID, so also match the model name.
+# Install: sudo cp udev/70-geonix-bootloader.rules /etc/udev/rules.d/ &&
+#          sudo udevadm control --reload   (then replug the keyboard)
+SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", ENV{ID_VENDOR_ID}=="03eb", ENV{ID_MODEL_ID}=="2045", ENV{ID_MODEL}=="RDMCTMZT_DFU", TAG+="uaccess"
