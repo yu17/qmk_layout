@@ -184,8 +184,9 @@ in mind when changing the keymap:
   the live colours and auto Num Lock (USB only: `Key_Mode == QMK_USB_MODE`).
 * **Vial key overrides** (and combos, tap dances) live in EEPROM, so a
   keymap's `key_overrides[]` is ignored; defaults would have to be written
-  into Vial's EEPROM after it resets (it does on every new build, since its
-  validity check uses the build date). None are used now.
+  into Vial's EEPROM after it resets (it does on every new build: its
+  validity check compares a random `BUILD_ID` generated per build). None are
+  used now.
 * **EEPROM budget.** 1152 bytes of emulated EEPROM: 7 layers x 48 keys x 2 B
   = 672 B for the keymap plus Vial's default pools (8 combos, tap dances, key
   overrides, alt-repeat keys) and macros. An 8th layer needs the pools

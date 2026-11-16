@@ -203,7 +203,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 // clang-format on
 
-
 /* ------------------------------------------------------ Underglow layers --
  * The base layer has no entry: it shows the regular RGBLight effect.
  * Order matters - later entries are drawn on top, so the highest active
