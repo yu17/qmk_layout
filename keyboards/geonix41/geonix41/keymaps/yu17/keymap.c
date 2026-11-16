@@ -23,7 +23,6 @@
 
 #include QMK_KEYBOARD_H
 #include "rdr_common.h"
-#include "dynamic_keymap.h"
 
 enum geonix_layers { // same numbering as the Planck keymap
     _BASE,   // 0
@@ -70,7 +69,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,-----------------------------------------------------------------------------------.
  * |   `  |   1  |   2  |   3  |   4  |   5  |   6  |   7  |   8  |   9  |   0  | Bksp |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
- * | Esc  |CapsWd|      |      |      |      |      |      |      |   -  |   =  |      |
+ * | Esc  |CapsWd|      |      |      |      |      |      |      |   -  |   =  | Del  |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
  * | Shift|      |      |      |      |      |      |      |   [  |   ]  |   \  |Enter |
  * |------+------+------+------+------+------+------+------+------+------+------+------|
@@ -79,7 +78,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_LOWER] = LAYOUT_tkl_ansi(
     KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_BSPC,
-    KC_ESC,  CW_TOGG, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_MINS, KC_EQL,  XXXXXXX,
+    KC_ESC,  CW_TOGG, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_MINS, KC_EQL,  KC_DEL,
     KC_LSFT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LBRC, KC_RBRC, KC_BSLS, KC_ENT,
     KC_LCTL, FN_APP,  KC_LGUI, KC_LALT, XXXXXXX, KC_SPC,  KC_SPC,  RAISE,   KC_HOME, KC_PGDN, KC_PGUP, KC_END
 ),
@@ -194,37 +193,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 // clang-format on
 
-/* ------------------------------------------------- Default key override --
- * Shift + Backspace = Delete. Vial keeps key overrides in EEPROM and ignores
- * a keymap's key_overrides[], so seed Vial slot 0 whenever Vial's EEPROM was
- * just reset (new firmware or factory reset). It then shows up - and can be
- * edited or deleted - in the Vial app.
- */
-static bool vial_data_reset = false;
-
-void via_init_kb(void) { // runs right before VIA validates (and maybe resets) its EEPROM
-    if (!via_eeprom_is_valid()) vial_data_reset = true;
-}
-
-void eeconfig_init_user(void) { // full settings reset
-    vial_data_reset = true;
-}
-
-static void seed_key_overrides(void) {
-    vial_key_override_entry_t ko = {
-        .trigger          = KC_BSPC,
-        .replacement      = KC_DEL,
-        .layers           = 0xFFFF,
-        .trigger_mods     = MOD_MASK_SHIFT,
-        .negative_mod_mask = 0,
-        .suppressed_mods  = MOD_MASK_SHIFT,
-        .options          = vial_ko_enabled | vial_ko_option_activation_trigger_down |
-                   vial_ko_option_activation_required_mod_down | vial_ko_option_activation_negative_mod_up,
-    };
-    dynamic_keymap_set_key_override(0, &ko);
-    vial_init(); // reload tap dance / combos / key overrides from EEPROM
-}
-
 /* ------------------------------------------------------------ Effect sets --
  * One ordered list of every compiled-in RGB effect: the short set first, then
  * the rest. Effect +/- (UG_NEXT/UG_PREV) step through it and wrap at the end
@@ -290,7 +258,6 @@ static void fx_ensure_short(void) {
  */
 void keyboard_post_init_kb(void) {
     Keyboard_Info.Mac_Win_Mode = INIT_WIN_MODE;
-    if (vial_data_reset) seed_key_overrides();
     keyboard_post_init_user();
     fx_ensure_short(); // boot with the short effect set
 }

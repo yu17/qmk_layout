@@ -27,7 +27,7 @@ Both are 4x12 grids and use the same layers, numbered the same way:
 | # | Layer | How to get there | What's on it |
 |---|---|---|---|
 | 0 | Base | default | QWERTY; bottom row Ctrl, Fn, Win, Alt, Lower, Space, Space, Raise, Left, Down, Up, Right |
-| 1 | Lower | hold Lower; lock with Fn + Lower | digits row, `- = [ ] \`, Caps Word (A), Home / PgDn / PgUp / End |
+| 1 | Lower | hold Lower; lock with Fn + Lower | digits row, `- = [ ] \`, Del (right of `=`), Caps Word (A), Home / PgDn / PgUp / End |
 | 2 | Raise | hold Raise; lock with Fn + Raise | keypad (keypad codes + Num Lock) on the right, arrows in the middle, left half falls through (WASD etc. for games); Num Lock is switched on automatically |
 | 3 | Fn | hold Fn (tap Fn = Menu/App) | F1-F12; Mute, Vol-, Vol+, Prev, Play/Pause, Next, Stop; PrtSc, ScrLk, Pause; screen brightness; Ins, Del, Right Shift; Right Alt, Right Win, Menu, Right Ctrl; lock Lower / lock Raise; Space = back to Base |
 | 4 | Extra | hold Lower + Raise | F13-F24, all lighting controls, Mouse layer key |
@@ -37,7 +37,6 @@ Both are 4x12 grids and use the same layers, numbered the same way:
 
 Everywhere:
 
-* **Shift + Backspace = Delete.**
 * **Fn + Space** returns to Base and releases a locked layer.
 * **Layer lock** (Fn + Lower / Fn + Raise) has no timeout; release it with
   Fn + Space or the same combo.

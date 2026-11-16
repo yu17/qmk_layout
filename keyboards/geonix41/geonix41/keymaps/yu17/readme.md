@@ -14,9 +14,6 @@ in Chosfox's closed library (`lib/rdr_lib/librdrcommon.a`).
   Settings; the ambient (side/logo) strip's controls on Extra.
 * **Num Lock** is switched on automatically when Raise turns on **only over
   USB** (see below); when wireless, use the Num Lock key on Raise.
-* **Shift + Backspace = Delete** is a Vial key override in slot 0, written
-  after every flash or factory reset; it can be edited or deleted in the
-  Vial app.
 * **NKRO** uses the vendor's 6-key / all-key toggle (one key), not QMK's
   NKRO on/off keys.
 
@@ -166,7 +163,7 @@ in mind when changing the keymap:
   and `rgb_matrix_indicators_advanced_user` to feed the library. This keymap
   therefore uses the `_kb` variants as wrappers that call the vendor's
   `_user` function first: `process_record_kb` (lock keys),
-  `keyboard_post_init_kb` (Windows mode, key-override seeding) and
+  `keyboard_post_init_kb` (Windows mode, short effect set) and
   `rgb_matrix_indicators_advanced_kb` (light-switch override).
 * **Fn key.** The exact keycodes `MO(2)` and `MO(3)` are treated as "the Fn
   key" (Win/Mac indicator, some Fn + Space handling). This keymap never uses
@@ -185,10 +182,10 @@ in mind when changing the keymap:
 * **Status.** `Keyboard_Info` (exported) holds the connection mode, Bluetooth
   channel, NKRO, Mac/Win, light on/off and ambient settings; it is read for
   the live colours and auto Num Lock (USB only: `Key_Mode == QMK_USB_MODE`).
-* **Vial key overrides** live in EEPROM and the keymap's `key_overrides[]` is
-  ignored. `via_init_kb()` / `eeconfig_init_user()` note when Vial's EEPROM
-  was just reset; `keyboard_post_init_kb()` then writes Shift + Backspace =
-  Delete into slot 0 and calls `vial_init()` to reload.
+* **Vial key overrides** (and combos, tap dances) live in EEPROM, so a
+  keymap's `key_overrides[]` is ignored; defaults would have to be written
+  into Vial's EEPROM after it resets (it does on every new build, since its
+  validity check uses the build date). None are used now.
 * **EEPROM budget.** 1152 bytes of emulated EEPROM: 7 layers x 48 keys x 2 B
   = 672 B for the keymap plus Vial's default pools (8 combos, tap dances, key
   overrides, alt-repeat keys) and macros. An 8th layer needs the pools

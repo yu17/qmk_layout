@@ -244,7 +244,7 @@ const LOWER = 40, RAISE = 43, FN = 37;
 const BOARDS = [
   {
     id: "planck", name: "Drop Planck rev6", src: "planck", geom: GRID,
-    meta: "Firmware: upstream QMK, target planck/rev6_drop. LED: underglow colour shown for that layer (9 LEDs under the board). Everywhere: Shift + Backspace = Delete; Fn + Space returns to Base and releases a locked layer.",
+    meta: "Firmware: upstream QMK, target planck/rev6_drop. LED: underglow colour shown for that layer (9 LEDs under the board). Everywhere: Fn + Space returns to Base and releases a locked layer.",
     layers: {
       _0_BASE:   { name: "Base", how: "Default layer", led: "Base glow (static light cyan by default)", ledc: hsv(116, 64, 255), held: [] },
       _1_LOWER:  { name: "Lower", how: "Hold Lower · lock: Fn + Lower", ledc: hsv(85, 170, 255), led: "Green", held: [LOWER] },
@@ -259,7 +259,7 @@ const BOARDS = [
   },
   {
     id: "geonix", name: "Chosfox Geonix Rev.2.5 1U", src: "geonix", geom: GRID, compare: "planck",
-    meta: "Firmware: Chosfox vial-qmk fork (Vial: keys can also be changed live in the Vial app). LED: Base runs the RGB effect; every other layer colours each key by what it does (dimmed when it falls through, dark when unused), the Space keys show the layer colour, and Num Lock, the active connection, NKRO and the Win key show their state. Everywhere: Shift + Backspace = Delete (a Vial key override); Fn + Space returns to Base and releases a locked layer.",
+    meta: "Firmware: Chosfox vial-qmk fork (Vial: keys can also be changed live in the Vial app). LED: Base runs the RGB effect; every other layer colours each key by what it does (dimmed when it falls through, dark when unused), the Space keys show the layer colour, and Num Lock, the active connection, NKRO and the Win key show their state. Everywhere: Fn + Space returns to Base and releases a locked layer.",
     pair: { _BASE: "_0_BASE", _LOWER: "_1_LOWER", _RAISE: "_2_RAISE", _FN: "_3_FN", _EXTRA: "_4_EXTRA", _MOUSE: "_5_MOUSE", _KBDCFG: "_6_KBDCFG" },
     layers: {
       _BASE:   { name: "Base", how: "Default layer", led: "Current RGB effect", ledc: "conic-gradient(red, yellow, lime, cyan, blue, magenta, red)", held: [] },

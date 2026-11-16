@@ -20,7 +20,6 @@ in the top-level README; every layer is also drawn in the comments of
 * **Encoder** (if fitted): scroll wheel down/up.
 * **Num Lock** is switched on automatically whenever Raise turns on
   (Raise is a keypad).
-* **Shift + Backspace = Delete** is a QMK key override (`key_overrides[]`).
 * **Layer lock** keys (Fn + Lower / Fn + Raise) are custom keycodes that call
   `layer_lock_invert()`; QMK's Layer Lock idle timeout is not used (it would
   apply to every locked layer, including a locked keypad in a game).
