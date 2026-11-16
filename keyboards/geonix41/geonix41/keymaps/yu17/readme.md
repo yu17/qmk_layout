@@ -81,7 +81,7 @@ the stock layout.
 Effect +/- (Extra + F / V) cycle a **short set** of calm, non-rainbow
 effects by default:
 
-`solid_color` (default), `alphas_mods`, `gradient_left_right`, `breathing`,
+`solid_color` (default; light cyan like the Planck, 40% brightness), `alphas_mods`, `gradient_left_right`, `breathing`,
 `band_val`, `band_spiral_val`, `riverflow`, `hue_wave`, `starlight_smooth`,
 `pixel_fractal`, `solid_reactive_simple`, `solid_reactive_wide`,
 `solid_splash`, `typing_heatmap`.

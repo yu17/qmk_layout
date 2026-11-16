@@ -50,6 +50,13 @@
 #define ENABLE_RGB_MATRIX_TYPING_HEATMAP
 #define ENABLE_RGB_MATRIX_STARLIGHT_SMOOTH
 #define RGB_MATRIX_DEFAULT_MODE RGB_MATRIX_SOLID_COLOR
+// Same colour as the Planck's underglow (light cyan), at 40% of this board's
+// maximum brightness (144). Used when the settings are reset (factory
+// reset); flashing keeps the saved lighting.
+#define RGB_MATRIX_DEFAULT_HUE 116
+#define RGB_MATRIX_DEFAULT_SAT 64
+#undef RGB_MATRIX_DEFAULT_VAL // board default: 128
+#define RGB_MATRIX_DEFAULT_VAL 58
 
 // Tri-layer: Lower + Raise -> Extra
 #define TRI_LAYER_LOWER_LAYER 1
